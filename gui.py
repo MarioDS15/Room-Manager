@@ -1,79 +1,83 @@
-import tkinter as tk
-from data_handling import log_entry, update_display, remove_entry
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QCheckBox
+from data_handling import log_entry, update_display, remove_entry  # Make sure these are adapted for PyQt
 
-class Application:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Room Entry Logger")
+class Application(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Room Entry Logger")
 
-        # Create the data display first
- 
+        # Create central widget and layout
+        self.central_widget = QWidget()
+        self.setCentralWidget(self.central_widget)
+        self.main_layout = QVBoxLayout()
+        self.central_widget.setLayout(self.main_layout)
 
-        # Create a frame for the log entry widgets on the right
-        self.entry_frame = tk.Frame(self.root)
-        self.entry_frame.pack(side=tk.LEFT, fill=tk.BOTH)
+        # Name entry widgets
+        self.name_label = QLabel("Enter Name:")
+        self.name_entry = QLineEdit()
 
-        self.label = tk.Label(self.entry_frame, text="Enter Name:")
-        self.label.pack()
+        # ID entry widgets
+        self.id_label = QLabel("Enter ID number:")
+        self.id_entry = QLineEdit()
 
-        # Create the name entry inside the frame
-        self.name_entry = tk.Entry(self.entry_frame)
-        self.name_entry.pack()
+        # Items being checked out
+        self.item_label = QLabel("Items being checked out:")
+        self.keyboard_cb = QCheckBox("Keyboard")
+        self.mouse_cb = QCheckBox("Mouse")
+        self.headset_cb = QCheckBox("Headset")
+        self.controller_cb = QCheckBox("Controller")
 
-        self.idLabel = tk.Label(self.entry_frame, text="Enter ID number:")
-        self.idLabel.pack()
+        # Log student button
+        self.log_button = QPushButton("Log student")
+        self.log_button.clicked.connect(self.log)
 
-        # Create the ID entry inside the frame
-        self.id_entry = tk.Entry(self.entry_frame)
-        self.id_entry.pack(padx=10)
+        # Students logged in display
+        self.checked_in_label = QLabel("Students logged in:")
+        self.data_display = QTextEdit()
 
+        # Layout setup
+        self.setup_layouts()
 
-        self.items_frame = tk.Frame(self.entry_frame)
-        self.items_frame.pack(fill=tk.X, padx=10, pady=10)  # Adjust padding as needed
+    def setup_layouts(self):
+        # Create horizontal layouts for name and ID entries
+        name_layout = QHBoxLayout()
+        name_layout.addWidget(self.name_label)
+        name_layout.addWidget(self.name_entry)
 
+        id_layout = QHBoxLayout()
+        id_layout.addWidget(self.id_label)
+        id_layout.addWidget(self.id_entry)
+
+        # Create a vertical layout for checkboxes
+        items_layout = QVBoxLayout()
+        items_layout.addWidget(self.item_label)
+        items_layout.addWidget(self.keyboard_cb)
+        items_layout.addWidget(self.mouse_cb)
+        items_layout.addWidget(self.headset_cb)
+        items_layout.addWidget(self.controller_cb)
+
+        # Add name, ID, items, and log button to the main layout
+        self.main_layout.addLayout(name_layout)
+        self.main_layout.addLayout(id_layout)
+        self.main_layout.addLayout(items_layout)
+        self.main_layout.addWidget(self.log_button)
         
-        self.itemLabel = tk.Label(self.items_frame, text="Items being checked out:")
-        self.itemLabel.pack(padx=3, pady=5)
-
-        self.keyboard = tk.BooleanVar()
-        self.keyboardWidget = tk.Checkbutton(self.items_frame, text="Keyboard", variable=self.keyboard)
-        self.keyboardWidget.pack(anchor='w')
-
-        self.mouse = tk.BooleanVar()
-        self.mouseWidget = tk.Checkbutton(self.items_frame, text="Mouse", variable=self.mouse)
-        self.mouseWidget.pack(anchor='w')
-
-        self.headset = tk.BooleanVar()
-        self.headsetWidget = tk.Checkbutton(self.items_frame, text="Headset", variable=self.headset)
-        self.headsetWidget.pack(anchor='w')
-
-        self.controller = tk.BooleanVar()
-        self.controllerWidget = tk.Checkbutton(self.items_frame, text="Controller", variable=self.controller)
-        self.controllerWidget.pack(anchor='w')
-
-
-        self.checkedframe = tk.Frame(self.root)
-        self.checkedframe.pack(fill=tk.X)  # Adjust padding as needed
-        self.checkedInLabel = tk.Label(self.checkedframe, text="Students logged in:")
-        self.checkedInLabel.pack(padx=3, pady=5)
-        self.data_display = tk.Text(self.checkedframe, height=13, width=60)
-        self.data_display.pack(side=tk.RIGHT, padx=10, pady=10)
-
-        
-
-
-        # Create and pack the log button inside the frame
-        self.log_button = tk.Button(self.entry_frame, text="Log student", command=self.log)
-        self.log_button.pack(padx=10, pady=10)
-
-        # Update the display with current data
-        self.update_display()
+        # Add the logged-in label and text display to the main layout
+        self.main_layout.addWidget(self.checked_in_label)
+        self.main_layout.addWidget(self.data_display)
 
     def log(self):
-        log_entry(self.name_entry.get(), self.id_entry.get(), self.keyboard.get(), self.mouse.get(), self.headset.get(), self.controller.get())
-        self.name_entry.delete(0, tk.END)
-        self.update_display()
+        name = self.name_entry.text()
+        id_number = self.id_entry.text()
+        keyboard = self.keyboard_cb.isChecked()
+        mouse = self.mouse_cb.isChecked()
+        headset = self.headset_cb.isChecked()
+        controller = self.controller_cb.isChecked()
 
+        # Assuming log_entry function is adapted for PyQt
+        log_entry(name, id_number, keyboard, mouse, headset, controller)
+        self.name_entry.clear()
+        self.update_display()
     def update_display(self):
         self.data_display.delete(1.0, tk.END)
         display_text = update_display()
