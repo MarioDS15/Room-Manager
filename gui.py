@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QCheckBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QCheckBox
 from data_handling import log_entry, update_display, remove_entry  # Make sure these are adapted for PyQt
 
 class Application(QMainWindow):
@@ -6,19 +6,21 @@ class Application(QMainWindow):
         super().__init__()
         self.setWindowTitle("Room Entry Logger")
 
-        # Create central widget and layout
-        self.central_widget = QWidget()
-        self.setCentralWidget(self.central_widget)
-        self.main_layout = QVBoxLayout()
-        self.central_widget.setLayout(self.main_layout)
+        # Create and set grid layout
+        self.grid_layout = QGridLayout()
+        self.setLayout(self.grid_layout)
 
         # Name entry widgets
         self.name_label = QLabel("Enter Name:")
         self.name_entry = QLineEdit()
+        self.grid_layout.addWidget(self.name_label, 0, 0)
+        self.grid_layout.addWidget(self.name_entry, 0, 1)
 
         # ID entry widgets
         self.id_label = QLabel("Enter ID number:")
         self.id_entry = QLineEdit()
+        self.grid_layout.addWidget(self.id_label, 1, 0)
+        self.grid_layout.addWidget(self.id_entry, 1, 1)
 
         # Items being checked out
         self.item_label = QLabel("Items being checked out:")
@@ -26,18 +28,25 @@ class Application(QMainWindow):
         self.mouse_cb = QCheckBox("Mouse")
         self.headset_cb = QCheckBox("Headset")
         self.controller_cb = QCheckBox("Controller")
+        self.grid_layout.addWidget(self.item_label, 2, 0)
+        self.grid_layout.addWidget(self.keyboard_cb, 3, 0)
+        self.grid_layout.addWidget(self.mouse_cb, 4, 0)
+        self.grid_layout.addWidget(self.headset_cb, 5, 0)
+        self.grid_layout.addWidget(self.controller_cb, 6, 0)
 
         # Log student button
         self.log_button = QPushButton("Log student")
-        self.log_button.clicked.connect(self.log)
+        self.grid_layout.addWidget(self.log_button, 7, 0, 1, 2)  # Spanning 2 columns
 
         # Students logged in display
         self.checked_in_label = QLabel("Students logged in:")
         self.data_display = QTextEdit()
+        self.grid_layout.addWidget(self.checked_in_label, 8, 0)
+        self.grid_layout.addWidget(self.data_display, 9, 0, 1, 2)  # Spanning 2 columns
 
-        # Layout setup
-        self.setup_layouts()
-
+        # Connect button signal to slot
+        self.log_button.clicked.connect(self.log)
+    
     def setup_layouts(self):
         # Create horizontal layouts for name and ID entries
         name_layout = QHBoxLayout()
@@ -78,6 +87,7 @@ class Application(QMainWindow):
         log_entry(name, id_number, keyboard, mouse, headset, controller)
         self.name_entry.clear()
         self.update_display()
+
     def update_display(self):
         self.data_display.delete(1.0, tk.END)
         display_text = update_display()
