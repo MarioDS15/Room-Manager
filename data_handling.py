@@ -1,7 +1,7 @@
 import csv
 from datetime import datetime
 
-def log_entry(name, id):
+def log_entry(name, id, keyboard, mouse, headset, controller):
     # Get data from the GUI fields
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 

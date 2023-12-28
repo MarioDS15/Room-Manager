@@ -54,10 +54,10 @@ class Application:
 
         self.checkedframe = tk.Frame(self.root)
         self.checkedframe.pack(fill=tk.X)  # Adjust padding as needed
-        self.checkedInLabel = tk.Label(self.checkedframe, text="Items being checked out:")
+        self.checkedInLabel = tk.Label(self.checkedframe, text="Students logged in:")
         self.checkedInLabel.pack(padx=3, pady=5)
-        self.data_display = tk.Text(self.checkedframe, height=10, width=40)
-        self.data_display.pack(side=tk.RIGHT, padx=10)
+        self.data_display = tk.Text(self.checkedframe, height=13, width=60)
+        self.data_display.pack(side=tk.RIGHT, padx=10, pady=10)
 
         
 
@@ -70,7 +70,7 @@ class Application:
         self.update_display()
 
     def log(self):
-        log_entry(self.name_entry.get())
+        log_entry(self.name_entry.get(), self.id_entry.get(), self.keyboard.get(), self.mouse.get(), self.headset.get(), self.controller.get())
         self.name_entry.delete(0, tk.END)
         self.update_display()
 
