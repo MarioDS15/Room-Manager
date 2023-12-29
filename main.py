@@ -1,7 +1,61 @@
 import subprocess
 import sys
 from data_handling import log_entry, update_display, remove_entry  # Ensure these are adapted for PyQt
-from gui import Application
+#border: 0px solid red;
+stylesheet = """
+QWidget {  
+    background-color: #3e424a; /* Background color of the window */
+    
+}
+QLabel {
+    color: #979ca6;  /* White text color */
+    fontsize: 16px;
+}
+QPushButton {
+    color: white; /* Text color */
+    background-color: #02781c; /* Background color */
+    font: bold 14px;
+    padding: 6px;
+}
+QPushButton:pressed {
+    background-color: #065718; /* Background color when pressed */
+    border-style: inset;
+}
+QLineEdit {
+    color: black;  /* Text color */
+    background-color: #595f6b;  /* Background color */
+    border: 1px solid #686e7a;  /* Border color and width */
+    border-radius: 2px;  /* Rounded corners */
+    padding: 2px;  /* Spacing around text */
+    margin: 4px;  /* Spacing around the widget */
+}
+QCheckBox {
+    spacing: 5px;
+    color: #979ca6;  /* White text color */
+}
+QCheckBox::indicator {
+    width: 15px;
+    height: 15px;
+    border: 3px solid #686e7a; /* Border color for unchecked state */
+    border-radius: 5px;
+    background: #595f6b; /* Background color for unchecked state */
+}
+
+/* Style for checked state */
+QCheckBox::indicator:checked {
+    background: #3c4047; /* Background color for checked state */
+}
+
+/* Style for unchecked state with hover effect */
+QCheckBox::indicator:hover:!checked {
+    border: 2px solid #595f6b; /* Border color on hover when unchecked */
+}
+
+/* Style for checked state with hover effect */
+    QCheckBox::indicator:hover:checked {
+    border: 2px solid #3c4047; /* Border color on hover when checked */
+}
+"""
 
 def install_packages(package_list):
     """Install Python packages using pip with error handling and pip self-upgrade."""
@@ -22,16 +76,17 @@ def install_packages(package_list):
 if __name__ == "__main__":
 
     required_packages = [
-        'pyqt5',
+        'PyQt5',
         'requests',  # Add any other package names here
     ]
 
     install_packages(required_packages)
     from PyQt5.QtWidgets import QApplication
-
+    from gui import Application
     # Create an instance of QApplication
     app = QApplication(sys.argv)
-    
+    app.setStyle('Fusion')
+    app.setStyleSheet(stylesheet)
     # Create an instance of your application's main window
     main_window = Application()
     
