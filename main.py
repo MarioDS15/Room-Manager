@@ -1,7 +1,7 @@
 import subprocess
 import sys
 from data_handling import log_entry, update_display, remove_entry  # Ensure these are adapted for PyQt
-#border: 0px solid red;
+#border: 1px solid red;
 stylesheet = """
 QWidget {  
     background-color: #3e424a; /* Background color of the window */
@@ -55,6 +55,15 @@ QCheckBox::indicator:hover:!checked {
     QCheckBox::indicator:hover:checked {
     border: 2px solid #3c4047; /* Border color on hover when checked */
 }
+QListWidget::item {
+    color: black;  /* Text color */
+    background-color: #595f6b;  /* Background color */
+}
+QListWidget::item:selected {
+    color: white; /* Text color */
+    background-color: #02781c;
+}
+
 """
 
 def install_packages(package_list):
@@ -105,5 +114,6 @@ Check out system
 Make time entry be 12 hour format and do not include seconds
 Add checkout everyone button
 Add tabs, FAQ, quick fix, item inventory, etc
-
+Data validation
+Fix hovering over checkboxes
 """

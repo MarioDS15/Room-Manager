@@ -1,18 +1,19 @@
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QCheckBox, QListWidget, QListWidgetItem
 import csv
 from datetime import datetime
 
-def log_entry(name, id, keyboard, mouse, headset, controller):
+def log_entry(name, id, itemDict):
     # Get data from the GUI fields
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
     # Store the data locally or upload it to Google Sheets here
     with open('log_entries.csv', mode='a', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow([name, id, timestamp])
+        writer.writerow([name, id, timestamp, itemDict])
     
     with open('current_entries.csv', mode='a', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow([name, id, timestamp])
+        writer.writerow([name, id, timestamp, itemDict])
+    
 
 def update_display():
     display_text = ""
@@ -38,3 +39,4 @@ def remove_entry(name):
         writer.writerows(updated_entries)
 
     update_display()
+
