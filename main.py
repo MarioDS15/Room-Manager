@@ -1,6 +1,5 @@
 import subprocess
 import sys
-from data_handling import log_entry, update_display, remove_entry  # Ensure these are adapted for PyQt
 #border: 1px solid red;
 stylesheet = """
 QWidget {  
@@ -9,7 +8,7 @@ QWidget {
 }
 QLabel {
     color: #979ca6;  /* White text color */
-    fontsize: 16px;
+    font: 16px;
 }
 QPushButton {
     color: white; /* Text color */
@@ -90,6 +89,7 @@ if __name__ == "__main__":
     ]
 
     install_packages(required_packages)
+    from data_handling import *
     from PyQt5.QtWidgets import QApplication
     from gui import Application
     # Create an instance of QApplication
@@ -116,4 +116,10 @@ Add checkout everyone button
 Add tabs, FAQ, quick fix, item inventory, etc
 Data validation
 Fix hovering over checkboxes
+Hard reset button
+Scroll display
+Tab to have options
+Check if student already checked in
+Connect to google sheet (https://www.twilio.com/blog/2017/02/an-easy-way-to-read-and-write-to-a-google-spreadsheet-in-python.html)
 """
+
