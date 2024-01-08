@@ -100,7 +100,15 @@ class Application(QMainWindow):
         self.timeoutlayout.addWidget(self.timeoutList, 1, 0)
 
     def log(self): #Reject based on verification
-
+        if verify_id(self.id_entry.text()) == False:
+            self.throwPrompt("Invalid ID number")
+            self.clear()
+            return
+        if verify_name(self.name_entry.text()) == False:
+            self.throwPrompt("Invalid name")
+            self.clear()
+            return
+        
         name = self.name_entry.text()
         id_number = self.id_entry.text()
         keyboard = self.keyboard_cb.isChecked()
@@ -113,13 +121,15 @@ class Application(QMainWindow):
         self.checkedInList.addItem(log_entry(name, id_number, itemDict))
 
         # Clear the text fields
+        self.clear()
+
+    def clear(self):
         self.name_entry.clear()
         self.id_entry.clear()
         self.update_display()
 
-
     def populate(self): 
-        checkedInDict = load_current_sessions()
+        checkedInDict = load_current_sessions("current_entries.csv")
         for id, session_info in checkedInDict.items():
             # Extract individual data from session_info
             name = session_info[0]
@@ -132,10 +142,14 @@ class Application(QMainWindow):
         
 
     def populateTimeout(self):
-        return
         checkedInDict = load_expired_sessions("current_entries.csv")
-        for key in checkedInDict:
-            self.checkedInList.addItem(csv_to_list_widget(checkedInDict[key][0], checkedInDict[key][1],checkedInDict[key][2], checkedInDict[key][3]))
+        for id, session_info in checkedInDict.items():
+            # Extract individual data from session_info
+            name = session_info[0]
+            id = session_info[1]
+            check_in_time = session_info[2]
+            # Now pass these as separate arguments
+            self.timeoutList.addItem(csv_to_list_widget(name, id, check_in_time))
 
     def update_display(self):
         pass 
@@ -210,3 +224,6 @@ class Application(QMainWindow):
     #Runs every minute to update people that got timed out
     def routine(self):
         self.populate()
+
+    def throwPrompt(self, message):
+        pass

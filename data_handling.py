@@ -30,14 +30,21 @@ def log_entry(name, id, itemDict):
     
     return csv_to_list_widget(name, id, timestamp)
     
-def load_current_sessions():
+def load_current_sessions(csv_file_path):
     current_sessions = {}
-    with open(CSV_FILE_PATH, newline='', encoding='utf-8') as csvfile:
+    now = datetime.now()
+
+    with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
         csvreader = csv.reader(csvfile)
         for row in csvreader:
             if len(row) >= 3:  # Check if the row has at least 3 elements
-                id = row[1]
-                current_sessions[id] = row  # Store the entire row
+                id, check_in_time_str = row[1], row[2]
+                check_in_time = datetime.strptime(check_in_time_str, '%Y-%m-%d %H:%M:%S')
+                
+                # Check if the session time has not exceeded 2 hours
+                if now - check_in_time < session_time_limit:  # Session is still active
+                    current_sessions[id] = row  # Store the entire row
+
     return current_sessions
 
 def load_expired_sessions(csv_file_path):
@@ -71,7 +78,7 @@ def check_if_session_active(id, current_sessions):
     return False
 
 # At application startup
-current_sessions = load_current_sessions()
+current_sessions = load_current_sessions(CSV_FILE_PATH)
 
 # When someone tries to check in
 def try_check_in(name, id):
@@ -119,4 +126,17 @@ def timeover():
         csvwriter = csv.writer(file)
         csvwriter.writerows(updated_entries)
 
+def verify_id(id):
+    if len(id) == 9:
+        if id[0] == 'g' or id[0] == 'G':
+            if id[1:].isdigit():
+                return True
+    elif len(id) == 8:
+        if id.isdigit():
+            return True
+    return False
 
+def verify_name(name):
+    if len(name) > 0 and name.isalpha():
+        return True
+    return False
