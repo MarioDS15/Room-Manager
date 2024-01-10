@@ -62,6 +62,11 @@ QListWidget::item:selected {
     color: white; /* Text color */
     background-color: #02781c;
 }
+self.toolbar.setStyleSheet
+    QToolBar { background-color: #595f6b;  }
+    QToolButton { background-color: #595f6b; border: none; padding: 4px; }
+    QToolButton:hover { background-color: #3c4047; }
+
 
 """
 
@@ -106,20 +111,21 @@ if __name__ == "__main__":
     sys.exit(app.exec_())
 
 """
-Add rented items to display
-Implement remove entry
-Fix display (grid)
+Add rented items to display [Don't need]
+Implement remove entry [DONE]
+Fix display (grid) [DONE]
 Auto update time (Threading)
-Check out system
-Make time entry be 12 hour format and do not include seconds
+Check out system [DONE]
+Make time entry be 12 hour format and do not include seconds 
 Add checkout everyone button
 Add tabs, FAQ, quick fix, item inventory, etc
-Data validation
+Data validation [DONE]
 Fix hovering over checkboxes
-Hard reset button
+Hard reset button [Don't need]
 Scroll display
 Tab to have options
-Check if student already checked in
+Check if student already checked in [DONE]
+Add option to only require ID
 Connect to google sheet (https://www.twilio.com/blog/2017/02/an-easy-way-to-read-and-write-to-a-google-spreadsheet-in-python.html)
 """
 
