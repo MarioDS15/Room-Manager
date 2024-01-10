@@ -1,4 +1,5 @@
 import csv
+import ast
 
 USER_SETTINGS = "user_settings.csv"
 ROOM_FILE = "room_variables.csv"
@@ -31,3 +32,24 @@ def update_row(csv_file_path, key, new_value):
     with open(csv_file_path, mode='w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile)
         csvwriter.writerows(rows)
+
+def items_to_dict(csv_file_path, id):
+    with open(csv_file_path, mode='r', newline='') as csvfile:
+        csvreader = csv.reader(csvfile)
+        next(csvreader, None)  # Skip the header row
+        for row in csvreader:
+            if row and row[1].strip() == id:  # Ensure the row has at least one column
+                dictionary_str = row[3].strip()
+                dictionary = ast.literal_eval(dictionary_str)
+                return dictionary
+    return None
+
+def get_student_name(id):
+    with open(CURRENT_STUDENTS_FILE, mode='r', newline='') as csvfile:
+        csvreader = csv.reader(csvfile)
+        next(csvreader, None)  # Skip the header row
+        print(id)
+        for row in csvreader:
+            if row and row[1].strip() == id:  # Ensure the row has at least one column
+                return row[0].strip()
+    return None

@@ -48,7 +48,7 @@ if __name__ == "__main__":
 Add rented items to display [Don't need]
 Implement remove entry [DONE]
 Fix display (grid) [DONE]
-Auto update time (Threading)
+Auto update time (Threading), check if ID is already there
 Check out system [DONE]
 Make time entry be 12 hour format and do not include seconds [DONE]
 Add checkout everyone button
@@ -60,6 +60,9 @@ Scroll display [Don't need]
 Right click
 Check if student already checked in [DONE]
 Add option to only require ID
+Verification of id removes name
+Check if student exceeded amount for today ?
+Seperate sheets by weeks
 Connect to google sheet (https://www.twilio.com/blog/2017/02/an-easy-way-to-read-and-write-to-a-google-spreadsheet-in-python.html)
 """
 

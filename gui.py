@@ -1,10 +1,11 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QCheckBox, QListWidget, QListWidgetItem, QMessageBox, QToolBar, QMenu, QAction
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from room_settings_GUI import *
 from data_handling import *
 from datetime import datetime, timedelta
-
+from StudentWidget import *
+from data_loader import *
 import csv
 import sys
 
@@ -36,9 +37,13 @@ class Application(QMainWindow):
 
         self.populate()
         self.populateTimeout()
-        self.list_widget.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.list_widget.customContextMenuRequested.connect(self.show_context_menu)
+        self.timer()
         self.secondary_window = None
+
+    def timer(self):
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.routine)
+        self.timer.start(6000)
 
     def open_room_settings(self):
         if self.secondary_window is None:  # Check if the window does not exist
@@ -108,7 +113,6 @@ class Application(QMainWindow):
         self.item_layout.addWidget(self.controller_cb, 6, 0)
         self.item_layout.addWidget(self.mousepad_cb, 7, 0)
 
-
     def checkedInGUI(self):
         # Checked in students 
         self.checkedInWidget = QWidget()
@@ -118,17 +122,21 @@ class Application(QMainWindow):
         # Students logged in display
         self.checked_in_label = QLabel("Students logged in")
         self.checkedInList = QListWidget()
+        self.checkedInList.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.checkedInList.customContextMenuRequested.connect(
+            lambda pos: self.show_context_menu(pos, self.checkedInList))
         self.checkedInlayout.addWidget(self.checked_in_label, 0, 0)
         self.checkedInlayout.addWidget(self.checkedInList, 1, 0, 1, 2)
 
         # Checkout button
         self.checkout_button = QPushButton("Checkout student")
         self.checkedInlayout.addWidget(self.checkout_button, 2, 0)  
-        self.checkout_button.clicked.connect(self.checkOut)
+        self.checkout_button.clicked.connect(lambda: self.checkOut(self.checkedInList))
 
         # Item buttons
         self.item_button = QPushButton("Check student items")
         self.checkedInlayout.addWidget(self.item_button, 2, 1)  
+        self.item_button.clicked.connect(lambda: self.returnItems(self.checkedInList))
 
     def timeoutGUI(self):
         self.timeoutWidget = QWidget()
@@ -136,6 +144,9 @@ class Application(QMainWindow):
         self.main_layout.addWidget(self.timeoutWidget, 1, 1)
         self.timeoutlabel = QLabel("Time has ended for these students ")
         self.timeoutList = QListWidget()
+        self.timeoutList.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.timeoutList.customContextMenuRequested.connect(
+            lambda pos: self.show_context_menu(pos, self.timeoutList))
         self.timeoutlayout.addWidget(self.timeoutlabel, 0, 0)
         self.timeoutlayout.addWidget(self.timeoutList, 1, 0, 1, 2)
 
@@ -179,6 +190,21 @@ class Application(QMainWindow):
         # Clear the text fields
         self.clear()
 
+    def show_context_menu(self, position, list_widget):
+        item = list_widget.itemAt(position)
+        if isinstance(item, StudentWidget):
+            context_menu, action1, action2 = item.createContextMenu()
+            selected_action = context_menu.exec_(list_widget.viewport().mapToGlobal(position))
+
+            if selected_action == action1:
+                #self.list_widget.setCurrentItem(item)
+                list_widget.setCurrentItem(item)
+                self.checkOut(list_widget)
+            
+            elif selected_action == action2:
+                list_widget.setCurrentItem(item)
+                self.returnItems(list_widget)
+
     def clear(self):
         self.name_entry.clear()
         self.id_entry.clear()
@@ -194,29 +220,6 @@ class Application(QMainWindow):
 
             # Now pass these as separate arguments
             self.checkedInList.addItem(csv_to_list_widget(name, id, check_in_time))
-
-    def show_context_menu(self, position):
-            # Get the item at the clicked position
-            print("Right click")
-            item = self.list_widget.itemAt(position)
-
-            if item is not None:
-                context_menu = QMenu(self)
-                print("List widget right click")
-                # Create actions for the menu
-                action1 = QAction('Action 1', self)
-                action2 = QAction('Action 2', self)
-
-                # Add actions to the menu
-                context_menu.addAction(action1)
-                context_menu.addAction(action2)
-
-                # Connect actions to functions
-                action1.triggered.connect(lambda: self.action_triggered(item, "Action 1"))
-                action2.triggered.connect(lambda: self.action_triggered(item, "Action 2"))
-
-                # Show the context menu at the cursor's position
-                context_menu.exec_(self.list_widget.mapToGlobal(position))
 
     def action_triggered(self, item, action_name):
         print(f"{action_name} triggered for {item.text()}")       
@@ -311,20 +314,42 @@ class Application(QMainWindow):
             # Remove the item at the specified row
             list_widget.takeItem(row)
 
-    def checkOut(self):
-        selected_student = self.checkedInList.currentItem()
+    def checkOut(self, list_widget = None):
+        selected_student = list_widget.currentItem()
         if selected_student is None:
             self.throwPrompt("Checkout Error", "No student selected")
             return
         id = list_widget_to_id(selected_student)
         remove_entry(id)
-        self.remove_selected_item(self.checkedInList)
+        self.remove_selected_item(list_widget)
+
+    def returnItems(self, list_widget = None):
+        selected_student = list_widget.currentItem()
+        if selected_student is None:
+            self.throwPrompt("Checkout Error", "No student selected")
+            return
+        id = list_widget_to_id(selected_student)
+        name = get_student_name(id)
+        items = items_to_dict(CURRENT_STUDENTS_FILE, id)
+        message = f"{name} has checked out the following: \n"
+        anyItems = False
+        for item in items:
+            if items[item] == True:
+                anyItems = True
+                message += f"{item}\n"
+        if anyItems == False:
+            message = f"{name} has not checked out any items"
+        self.throwPrompt("Items Checked Out", message)
 
     def remove_list_widget(self, list_widget):
-        self.checkedInList.takeItem(self.checkedInList.row(list_widget))
+        list_widget.takeItem(list_widget.row(list_widget))
+    
     #Runs every minute to update people that got timed out
     def routine(self):
+        print("Routine")
         self.populate()
+        self.populateTimeout()
+
 
     def throwPrompt(self, title, message):
         QMessageBox.information(self, title, message)

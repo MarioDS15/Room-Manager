@@ -4,7 +4,6 @@ import csv
 
 
 session_time_limit = timedelta(hours=2)
-
 max_pc_count = 10
 screen_size = 10
 max_headset_count = 10

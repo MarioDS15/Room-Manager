@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from room_variables import * 
 from user_settings import *
 from data_loader import *
-
+from StudentWidget import *
 CSV_FILE_PATH = CURRENT_STUDENTS_FILE
 
 
@@ -49,7 +49,7 @@ def load_current_sessions(csv_file_path):
             check_in_time = datetime.strptime(check_in_time_str, '%Y-%m-%d %H:%M:%S')
 
             # Check if the session time has not exceeded 2 hours
-            if now - check_in_time < timedelta(hours=2):  # Session is still active
+            if now - check_in_time < session_time_limit:  # Session is still active
                 current_sessions[id] = row  # Store the entire row
 
     return current_sessions
@@ -57,7 +57,7 @@ def load_current_sessions(csv_file_path):
 def load_expired_sessions(csv_file_path):
     expired_sessions = {}
     now = datetime.now()
-    session_time_limit = timedelta(hours=2)  # Define the session time limit
+    #session_time_limit = timedelta(hours=2)  # Define the session time limit
 
     with open(csv_file_path, newline='', encoding='utf-8') as file:
         csvreader = csv.reader(file)
@@ -83,7 +83,7 @@ def csv_to_list_widget(name, id, check_in_time_str):
     display_text = f"[{check_in_time_str}] {name} (ID: {id})"
     #display_text = f"{name} (ID: {id})"
     # Create and return the QListWidgetItem
-    item = QListWidgetItem(display_text)
+    item = StudentWidget(display_text)
     return item
 
 def convert_to_12hr(time_string):
