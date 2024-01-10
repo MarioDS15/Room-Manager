@@ -2,7 +2,10 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QHB
 import csv
 from datetime import datetime, timedelta
 from room_variables import * 
-CSV_FILE_PATH = 'current_entries.csv'
+from user_settings import *
+from data_loader import *
+
+CSV_FILE_PATH = CURRENT_STUDENTS_FILE
 
 
 
