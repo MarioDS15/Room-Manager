@@ -344,10 +344,14 @@ class Application(QMainWindow):
     def remove_list_widget(self, list_widget):
         list_widget.takeItem(list_widget.row(list_widget))
     
+    def remove_all_list_widgets(self, list_widget):
+        list_widget.clear()
     #Runs every minute to update people that got timed out
     def routine(self):
         print("Routine")
+        self.remove_all_list_widgets(self.checkedInList)
         self.populate()
+        self.remove_all_list_widgets(self.timeoutList)
         self.populateTimeout()
 
 

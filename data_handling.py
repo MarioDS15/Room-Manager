@@ -191,6 +191,8 @@ def list_widget_to_id(list_widget):
     id = display_text.split('ID: ')[1].replace(')', '')
     return id
 
+
+
 def remove_entry(id, csv_file_path = CSV_FILE_PATH):
     updated_entries = []
 

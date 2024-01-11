@@ -21,3 +21,4 @@ Test,G23232323,2024-01-10 18:54:51,"{'Keyboard': False, 'Mouse': False, 'Headset
 Test,G12121212,2024-01-10 19:06:02,"{'Keyboard': False, 'Mouse': True, 'Headset': False, 'Controller': False}"
 Testy,G23542354,2024-01-10 19:30:52,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False}"
 test,G12121212,2024-01-10 19:36:13,"{'Keyboard': False, 'Mouse': False, 'Headset': True, 'Controller': False}"
+Expired,G01012233,2024-01-11 16:29:39,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False}"
