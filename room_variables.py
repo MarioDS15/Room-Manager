@@ -65,8 +65,9 @@ def set_mousepad_count(mousepad_count):
 
 def set_PC_in_use(PC_count):
     global PC_in_use
-    update_row(ITEMS_FILE, 'PC_Count', PC_count)
-    PC_in_use = PC_count
+    print("PC count " + str(PC_count))
+    update_row(ITEMS_FILE, 'PC_count', PC_count)
+    PC_in_use = int(PC_count)
 
 def set_headset_in_use(headset_count):
     global headset_in_use
@@ -90,7 +91,7 @@ def set_controller_in_use(controller_count):
 
 def set_mousepad_in_use(mousepad_count):
     global mousepad_in_use
-    update_row(ROOM_FILE, 'Mousepad_count', mousepad_count)
+    update_row(ITEMS_FILE, 'Mousepad_count', mousepad_count)
     mousepad_in_use = mousepad_count
 
 def load_items():

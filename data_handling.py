@@ -235,6 +235,7 @@ def edit_inventory(itemDict, returning = False):
             set_controller_in_use(get_controller_in_use() + 1)
         if itemDict['Mousepad']:
             set_mousepad_in_use(get_mousepad_in_use() + 1)
+        set_PC_in_use(get_PC_in_use() + 1)
 
 
 def checkInventory():

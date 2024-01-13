@@ -384,7 +384,6 @@ class Application(QMainWindow):
         self.populate()
         self.remove_all_list_widgets(self.timeoutList)
         self.populateTimeout()
-        update_room_stats()
 
     def checkout_all(self, list_widget):
         for i in range(list_widget.count()):
