@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QHB
 from PyQt5.QtCore import Qt
 from room_variables import *
 
-class RoomSettingWindow(QMainWindow):
+class RoomStatsWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Room stats Window')
@@ -25,152 +25,59 @@ class RoomSettingWindow(QMainWindow):
 
 
     def dataEntryGUI(self):
-        total_hours = session_time_limit.days * 24 + session_time_limit.seconds // 3600
-        self.Time_limit = QLabel("How many PCs are in use: {}".format(get_PC_in_use()))
-        self.current_time_limit = QLabel(f"Current time limit: {total_hours} hrs")
-        self.current_time_limit.setStyleSheet('color: #747982;')
-        self.item_layout.addWidget(self.Time_limit, 0, 0)
-        self.item_layout.addWidget(self.Time_limit_entry, 0, 1)
-        self.item_layout.addWidget(self.current_time_limit, 0, 2)
+        self.pc_count = QLabel("{} PCs are available".format( get_max_pc_count() - get_PC_in_use()))
+        self.pc_taken = QLabel("{} PCs are in use".format(get_PC_in_use()))
+        self.pc_taken.setStyleSheet('color: #747982;')
+        self.item_layout.addWidget(self.pc_count, 0, 0)
+        self.item_layout.addWidget(self.pc_taken, 0, 1)
+        self.pc_count.setAlignment(Qt.AlignCenter)
+        self.pc_taken.setAlignment(Qt.AlignCenter)
 
-        self.PC_count = QLabel("Update PC count")
-        self.PC_count_entry = QLineEdit()
-        self.current_pc_count = QLabel(f"PC count: {get_max_pc_count()}")
-        self.current_pc_count.setStyleSheet('color: #747982;')
-        self.item_layout.addWidget(self.PC_count, 1, 0)
-        self.item_layout.addWidget(self.PC_count_entry, 1, 1)
-        self.item_layout.addWidget(self.current_pc_count, 1, 2)
+        self.headset_count = QLabel("{} Headsets are available".format( get_max_headset_count() - get_headset_in_use()))
+        self.headset_taken = QLabel("{} Headsets are in use".format(get_headset_in_use()))
+        self.headset_taken.setStyleSheet('color: #747982;')
+        self.item_layout.addWidget(self.headset_count, 1, 0)
+        self.item_layout.addWidget(self.headset_taken, 1, 1)
+        self.headset_count.setAlignment(Qt.AlignCenter)
+        self.headset_taken.setAlignment(Qt.AlignCenter)
 
-        self.Headset_count = QLabel("Update Headset count")
-        self.Headset_count_entry = QLineEdit()
-        self.current_headset_count = QLabel(f"Headset count: {get_max_headset_count()}")
-        self.current_headset_count.setStyleSheet('color: #747982;')
-        self.item_layout.addWidget(self.Headset_count, 2, 0)
-        self.item_layout.addWidget(self.Headset_count_entry, 2, 1)
-        self.item_layout.addWidget(self.current_headset_count, 2, 2)
-
-        self.Mouse_count = QLabel("Update Mouse count")
-        self.Mouse_count_entry = QLineEdit()
-        self.current_mouse_count = QLabel(f"Mouse count: {get_max_mouse_count()}")
-        self.current_mouse_count.setStyleSheet('color: #747982;')
-        self.item_layout.addWidget(self.Mouse_count, 3, 0)
-        self.item_layout.addWidget(self.Mouse_count_entry, 3, 1)
-        self.item_layout.addWidget(self.current_mouse_count, 3, 2)
-
-        self.Keyboard_count = QLabel("Update Keyboard count")
-        self.Keyboard_count_entry = QLineEdit()
-        self.current_keyboard_count = QLabel(f"Keyboard count: {get_max_keyboard_count()}")
-        self.current_keyboard_count.setStyleSheet('color: #747982;')
-        self.item_layout.addWidget(self.Keyboard_count, 4, 0)
-        self.item_layout.addWidget(self.Keyboard_count_entry, 4, 1)
-        self.item_layout.addWidget(self.current_keyboard_count, 4, 2)
-
-        self.Controller_count = QLabel("Update Controller count")
-        self.Controller_count_entry = QLineEdit()
-        self.current_controller_count = QLabel(f"Controller count: {get_max_controller_count()}")
-        self.current_controller_count.setStyleSheet('color: #747982;')
-        self.item_layout.addWidget(self.Controller_count, 5, 0)
-        self.item_layout.addWidget(self.Controller_count_entry, 5, 1)
-        self.item_layout.addWidget(self.current_controller_count, 5, 2)
-
-        self.Mousepad_count = QLabel("Update Mousepad count")
-        self.Mousepad_count_entry = QLineEdit()
-        self.current_mousepad_count = QLabel(f"Mousepad count: {get_max_mousepad_count()}")
-        self.current_mousepad_count.setStyleSheet('color: #747982;')
-        self.item_layout.addWidget(self.Mousepad_count, 6, 0)
-        self.item_layout.addWidget(self.Mousepad_count_entry, 6, 1)
-        self.item_layout.addWidget(self.current_mousepad_count, 6, 2)
-
-        self.save_button = QPushButton("Save")
-        self.save_button.clicked.connect(self.save)
-        self.item_layout.addWidget(self.save_button, 7, 0, 2, 2)
-
-        pass
-
-    def save(self):
-
-        #Time
-        if self.Time_limit_entry.text():
-            time_limit = self.Time_limit_entry.text()
-            if time_limit.isdigit():
-                set_time_limit(int(time_limit))
-                total_hours = get_session_time_limit().days * 24 + get_session_time_limit().seconds // 3600
-                self.current_time_limit.setText(f"Current time limit: {total_hours} hrs")
-                self.Time_limit_entry.setText("")
-            else:
-                self.throw_error("Please enter a valid time limit (in hours)")
-                self.Time_limit_entry.setText("")
+        self.mouse_count = QLabel("{} Mouses are available".format( get_max_mouse_count() - get_mouse_in_use()))
+        self.mouse_taken = QLabel("{} Mouses are in use".format(get_mouse_in_use()))
+        self.mouse_taken.setStyleSheet('color: #747982;')
+        self.item_layout.addWidget(self.mouse_count, 2, 0)
+        self.item_layout.addWidget(self.mouse_taken, 2, 1)
+        self.mouse_count.setAlignment(Qt.AlignCenter)
+        self.mouse_taken.setAlignment(Qt.AlignCenter)
         
-        #PC
-        if self.PC_count_entry.text():
-            pc_count = self.PC_count_entry.text()
-            if pc_count.isdigit():
-                set_max_pc_count(int(pc_count))
-                self.current_pc_count.setText(f"PC count: {get_max_pc_count()}")
-                self.PC_count_entry.setText("")
-            else:
-                self.throw_error("Please enter a valid PC count")
-                self.PC_count_entry.setText("")
-            
-        #Headset
-        if self.Headset_count_entry.text():
-            headset_count = self.Headset_count_entry.text()
-            if headset_count.isdigit():
-                set_headset_count(int(headset_count))
-                self.current_headset_count.setText(f"Headset count: {get_max_headset_count()}")
-                self.Headset_count_entry.setText("")
-            else:
-                self.throw_error("Please enter a valid headset count")
-                self.Headset_count_entry.setText("")
+        self.keyboard_count = QLabel("{} Keyboards are available".format( get_max_keyboard_count() - get_keyboard_in_use()))
+        self.keyboard_taken = QLabel("{} Keyboards are in use".format(get_keyboard_in_use()))
+        self.keyboard_taken.setStyleSheet('color: #747982;')
+        self.item_layout.addWidget(self.keyboard_count, 3, 0)
+        self.item_layout.addWidget(self.keyboard_taken, 3, 1)
+        self.keyboard_count.setAlignment(Qt.AlignCenter)
+        self.keyboard_taken.setAlignment(Qt.AlignCenter)
 
-            
-        #Mouse
-        if self.Mouse_count_entry.text():
-            mouse_count = self.Mouse_count_entry.text()
-            if mouse_count.isdigit():
-                set_mouse_count(int(mouse_count))
-                self.current_mouse_count.setText(f"Mouse count: {get_max_mouse_count()}")
-                self.Mouse_count_entry.setText("")
-            else:
-                self.throw_error("Please enter a valid mouse count")
-                self.Mouse_count_entry.setText("")
+        self.controller_count = QLabel("{} Controllers are available".format( get_max_controller_count() - get_controller_in_use()))
+        self.controller_taken = QLabel("{} Controllers are in use".format(get_controller_in_use()))
+        self.controller_taken.setStyleSheet('color: #747982;')
+        self.item_layout.addWidget(self.controller_count, 4, 0)
+        self.item_layout.addWidget(self.controller_taken, 4, 1)
+        self.controller_count.setAlignment(Qt.AlignCenter)
+        self.controller_taken.setAlignment(Qt.AlignCenter)
 
-            
-        #Keyboard
-        if self.Keyboard_count_entry.text():
-            keyboard_count = self.Keyboard_count_entry.text()
-            if keyboard_count.isdigit():
-                set_keyboard_count(int(keyboard_count))
-                self.current_keyboard_count.setText(f"Keyboard count: {get_max_keyboard_count()}")
-                self.Keyboard_count_entry.setText("")
-            else:
-                self.throw_error("Please enter a valid keyboard count")
-                self.Keyboard_count_entry.setText("")
+        self.mousepad_count = QLabel("{} Mousepads are available".format( get_max_mousepad_count() - get_mousepad_in_use()))
+        self.mousepad_taken = QLabel("{} Mousepads are in use".format(get_mousepad_in_use()))
+        self.mousepad_taken.setStyleSheet('color: #747982;')
+        self.item_layout.addWidget(self.mousepad_count, 5, 0)
+        self.item_layout.addWidget(self.mousepad_taken, 5, 1)
+        self.mousepad_count.setAlignment(Qt.AlignCenter)
+        self.mousepad_taken.setAlignment(Qt.AlignCenter)
 
-        
-        #Controller
-        if self.Controller_count_entry.text():
-            controller_count = self.Controller_count_entry.text()
-            if controller_count.isdigit():
-                set_controller_count(int(controller_count))
-                self.current_controller_count.setText(f"Controller count: {get_max_controller_count()}")
-                self.Controller_count_entry.setText("")
-            else:
-                self.throw_error("Please enter a valid controller count")
-                self.Controller_count_entry.setText("")
 
-        
-        #Mousepad
-        if self.Mousepad_count_entry.text():
-            mousepad_count = self.Mousepad_count_entry.text()
-            if mousepad_count.isdigit():
-                set_mousepad_count(int(mousepad_count))
-            else:
-                self.throw_error("Please enter a valid mousepad count")
-                self.Mousepad_count_entry.setText("")
-
-            
-
+        self.warning_label = QLabel("\nIf there are any items that are currently in the negatives:\n Check inventory and update the counts in the room settings tab.\nCheck if someone was not checked out.\nCheck if a student requested the wrong items.\n\nAll items should be in the positives after everyone is checked out.")
+        self.warning_label.setStyleSheet('color: #747982;')
+        self.warning_label.setAlignment(Qt.AlignCenter)
+        self.item_layout.addWidget(self.warning_label, 6, 0, 1, 2)
         pass
 
     def throw_error(self, message):

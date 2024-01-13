@@ -6,6 +6,7 @@ from data_handling import *
 from datetime import datetime, timedelta
 from StudentWidget import *
 from data_loader import *
+from room_stats_gui import *
 import csv
 import sys
 
@@ -57,6 +58,19 @@ class Application(QMainWindow):
     def on_room_settings_window_destroyed(self):
             self.secondary_window = None  # Reset the placeholder when the window is closed
 
+    def open_room_stats(self):
+        if self.secondary_window is None:
+            self.secondary_window = RoomStatsWindow()
+            self.secondary_window.show()
+            self.secondary_window.setAttribute(Qt.WA_DeleteOnClose)
+            self.secondary_window.destroyed.connect(self.on_room_stats_window_destroyed)
+        else:   
+            QMessageBox.information(self, 'Window Already Open', 'The secondary window is already open.')
+
+    def on_room_stats_window_destroyed(self):
+        self.secondary_window = None
+
+
     def toolbar(self):
         self.toolbar = QToolBar("Toolbar")
         toolbar = self.addToolBar("Toolbar")
@@ -73,6 +87,9 @@ class Application(QMainWindow):
         # Add a button to the toolbar
         self.roomSettings = toolbar.addAction("Room Settings")
         self.roomSettings.triggered.connect(self.open_room_settings)
+
+        self.roomStats = toolbar.addAction("Room Stats")
+        self.roomStats.triggered.connect(self.open_room_stats)
 
     def dataEntryGUI(self):
         # Name entry widgets
