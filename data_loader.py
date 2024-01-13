@@ -5,6 +5,7 @@ USER_SETTINGS = "user_settings.csv"
 ROOM_FILE = "room_variables.csv"
 CURRENT_STUDENTS_FILE = 'current_entries.csv'
 LOG_FILE = 'log_entries.csv'
+ITEMS_FILE = 'inventory_in_use.csv'
 
 def csv_to_dict(csv_file_path):
     settings = {}
@@ -43,6 +44,28 @@ def items_to_dict(csv_file_path, id):
                 dictionary = ast.literal_eval(dictionary_str)
                 return dictionary
     return None
+
+def csv_to_dict(csv_file_path = ROOM_FILE):
+    # Initialize an empty dictionary
+    settings_dict = {}
+    
+    # Open the CSV file for reading
+    with open(csv_file_path, mode='r', newline='', encoding='utf-8') as csvfile:
+        # Create a CSV reader object
+        csvreader = csv.reader(csvfile)
+        next(csvreader)  # Skip the header row
+        
+        # Iterate over the rows in the CSV
+        for row in csvreader:
+            # The first column is the key, and the second column is the value
+            key = row[0]
+            value = row[1]
+            settings_dict[key] = int(value)  # Convert value to integer
+    
+    # Return the dictionary
+    return settings_dict
+
+
 
 def get_student_name(id):
     with open(CURRENT_STUDENTS_FILE, mode='r', newline='') as csvfile:

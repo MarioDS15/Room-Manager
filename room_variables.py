@@ -13,6 +13,15 @@ max_headset_count = 10
 max_controller_count = 10
 max_mousepad_count = 10
 
+PC_in_use = 0
+headset_in_use = 0
+mouse_in_use = 0
+keyboard_in_use = 0
+headset_in_use = 0
+controller_in_use = 0
+mousepad_in_use = 0
+
+
 def set_time_limit(new_time_limit):
     global session_time_limit
     update_row(ROOM_FILE, 'Time_limit', new_time_limit)
@@ -54,6 +63,35 @@ def set_mousepad_count(mousepad_count):
     update_row(ROOM_FILE, 'Mousepad_count', mousepad_count)
     max_mousepad_count = int(mousepad_count)
 
+def set_PC_in_use(PC_count):
+    global PC_in_use
+    update_row(ITEMS_FILE, 'PC_Count', PC_count)
+    PC_in_use = PC_count
+
+def set_headset_in_use(headset_count):
+    global headset_in_use
+    update_row(ITEMS_FILE, 'Headset_count', headset_count)
+    headset_in_use = headset_count
+
+def set_mouse_in_use(mouse_count):
+    global mouse_in_use
+    update_row(ITEMS_FILE, 'Mouse_count', mouse_count)
+    mouse_in_use = mouse_count
+
+def set_keyboard_in_use(keyboard_count):
+    global keyboard_in_use
+    update_row(ITEMS_FILE, 'Keyboard_count', keyboard_count)
+    keyboard_in_use = keyboard_count
+
+def set_controller_in_use(controller_count):
+    global controller_in_use
+    update_row(ITEMS_FILE, 'Controller_count', controller_count)
+    controller_in_use = controller_count
+
+def set_mousepad_in_use(mousepad_count):
+    global mousepad_in_use
+    update_row(ROOM_FILE, 'Mousepad_count', mousepad_count)
+    mousepad_in_use = mousepad_count
 
 def load_items():
     settings = csv_to_dict(ROOM_FILE)
@@ -65,8 +103,20 @@ def load_items():
     set_controller_count(settings['Controller_count'])
     set_mousepad_count(settings['Mousepad_count'])
     
-load_items()
+def load_items_in_use():
+    settings = csv_to_dict(ITEMS_FILE)
+    set_PC_in_use(settings['PC_count'])
+    set_headset_in_use(settings['Headset_count'])
+    set_mouse_in_use(settings['Mouse_count'])
+    set_keyboard_in_use(settings['Keyboard_count'])
+    set_controller_in_use(settings['Controller_count'])
+    set_mousepad_in_use(settings['Mousepad_count'])
 
+load_items()
+load_items_in_use()
+
+def update_all():
+    load_items()
 
 # Add remaining counts here
 def get_session_time_limit():
@@ -93,3 +143,20 @@ def get_max_controller_count():
 def get_max_mousepad_count():
     return max_mousepad_count
 
+def get_PC_in_use():
+    return PC_in_use
+
+def get_headset_in_use():
+    return headset_in_use
+
+def get_mouse_in_use():
+    return mouse_in_use
+
+def get_keyboard_in_use():
+    return keyboard_in_use
+
+def get_controller_in_use():
+    return controller_in_use
+
+def get_mousepad_in_use():
+    return mousepad_in_use

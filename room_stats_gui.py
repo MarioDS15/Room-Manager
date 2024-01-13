@@ -6,7 +6,7 @@ from room_variables import *
 class RoomSettingWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('Room settings Window')
+        self.setWindowTitle('Room stats Window')
         #self.setMinimumSize(400, 700)
         # Create and set grid layout
         central_widget = QWidget(self)
@@ -18,7 +18,7 @@ class RoomSettingWindow(QMainWindow):
         self.item_layout = QGridLayout(self.dataWidget)
         self.main_layout.addWidget(self.dataWidget, 1, 0)
 
-        self.title_label = QLabel("Room Settings")
+        self.title_label = QLabel("Room stats")
         self.main_layout.addWidget(self.title_label, 0, 0, 1, 2, Qt.AlignCenter)
         self.title_label.setStyleSheet("color: white; font-size: 30px; font-weight: bold;")
         self.dataEntryGUI()
@@ -26,8 +26,7 @@ class RoomSettingWindow(QMainWindow):
 
     def dataEntryGUI(self):
         total_hours = session_time_limit.days * 24 + session_time_limit.seconds // 3600
-        self.Time_limit = QLabel("Enter room time limit")
-        self.Time_limit_entry = QLineEdit()
+        self.Time_limit = QLabel("How many PCs are in use: {}".format(get_PC_in_use()))
         self.current_time_limit = QLabel(f"Current time limit: {total_hours} hrs")
         self.current_time_limit.setStyleSheet('color: #747982;')
         self.item_layout.addWidget(self.Time_limit, 0, 0)
