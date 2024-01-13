@@ -82,7 +82,7 @@ class Application(QMainWindow):
         #self.action_button.triggered.connect(self.action)
 
         # Add a separator
-        toolbar.addSeparator()
+        #toolbar.addSeparator()
 
         # Add a button to the toolbar
         self.roomSettings = toolbar.addAction("Room Settings")
@@ -185,11 +185,11 @@ class Application(QMainWindow):
     def log(self): #Reject based on verification
         if verify_id(self.id_entry.text()) == False:
             self.throwPrompt("Entry Error", "Invalid ID number entered")
-            self.clear()
+            #self.id_entry.clear()
             return
         if verify_name(self.name_entry.text()) == False:
             self.throwPrompt("Entry Error", "Invalid name entered")
-            self.clear()
+            #self.name_entry.clear()
             return
         name = self.name_entry.text()
         id_number = id_convert(self.id_entry.text())
@@ -246,6 +246,11 @@ class Application(QMainWindow):
     def clear(self):
         self.name_entry.clear()
         self.id_entry.clear()
+        self.keyboard_cb.setChecked(False)
+        self.mouse_cb.setChecked(False)
+        self.headset_cb.setChecked(False)
+        self.controller_cb.setChecked(False)
+        self.mousepad_cb.setChecked(False)
         self.update_display()
 
     def populate(self): 
@@ -379,6 +384,7 @@ class Application(QMainWindow):
         self.populate()
         self.remove_all_list_widgets(self.timeoutList)
         self.populateTimeout()
+        update_room_stats()
 
     def checkout_all(self, list_widget):
         for i in range(list_widget.count()):

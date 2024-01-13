@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QCheckBox, QListWidget, QListWidgetItem, QMessageBox, QToolBar
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from room_variables import *
 
 class RoomStatsWindow(QMainWindow):
@@ -22,6 +22,7 @@ class RoomStatsWindow(QMainWindow):
         self.main_layout.addWidget(self.title_label, 0, 0, 1, 2, Qt.AlignCenter)
         self.title_label.setStyleSheet("color: white; font-size: 30px; font-weight: bold;")
         self.dataEntryGUI()
+        self.room_stats_timer()
 
 
     def dataEntryGUI(self):
@@ -74,12 +75,48 @@ class RoomStatsWindow(QMainWindow):
         self.mousepad_taken.setAlignment(Qt.AlignCenter)
 
 
-        self.warning_label = QLabel("\nIf there are any items that are currently in the negatives:\n Check inventory and update the counts in the room settings tab.\nCheck if someone was not checked out.\nCheck if a student requested the wrong items.\n\nAll items should be in the positives after everyone is checked out.")
+        self.warning_label = QLabel("\nIf there are any items that are currently in the negatives:\n Check inventory and update the counts in the room settings tab.\nCheck if someone was not checked out.\nCheck if a student requested the wrong items.\n[All items should be in the positives after everyone is checked out.]\n")
         self.warning_label.setStyleSheet('color: #747982;')
         self.warning_label.setAlignment(Qt.AlignCenter)
         self.item_layout.addWidget(self.warning_label, 6, 0, 1, 2)
-        pass
 
+        self.reset_button = QPushButton("Reset")
+        self.reset_button.clicked.connect(self.reset_stats_display)
+        
+        self.info_label = QLabel("This button will reset all counts to their inventory counts. \nOnly reset if all students are checked out.")
+        self.info_label.setStyleSheet('color: #ff3d3d;')
+        self.info_label.font().setPointSize(4)
+        self.info_label.setAlignment(Qt.AlignCenter)
+        self.item_layout.addWidget(self.info_label, 7, 1, 1, 1)
+        self.item_layout.addWidget(self.reset_button, 7, 0, 1, 1)
+    
+
+
+    def update_room_stats(self):
+        print("Updated display")
+        self.pc_count.setText("{} PCs are available".format( get_max_pc_count() - get_PC_in_use()))
+        self.pc_taken.setText("{} PCs are in use".format(get_PC_in_use()))
+        self.headset_count.setText("{} Headsets are available".format( get_max_headset_count() - get_headset_in_use()))
+        self.headset_taken.setText("{} Headsets are in use".format(get_headset_in_use()))
+        self.mouse_count.setText("{} Mouses are available".format( get_max_mouse_count() - get_mouse_in_use()))
+        self.mouse_taken.setText("{} Mouses are in use".format(get_mouse_in_use()))
+        self.keyboard_count.setText("{} Keyboards are available".format( get_max_keyboard_count() - get_keyboard_in_use()))
+        self.keyboard_taken.setText("{} Keyboards are in use".format(get_keyboard_in_use()))
+        self.controller_count.setText("{} Controllers are available".format( get_max_controller_count() - get_controller_in_use()))
+        self.controller_taken.setText("{} Controllers are in use".format(get_controller_in_use()))
+        self.mousepad_count.setText("{} Mousepads are available".format( get_max_mousepad_count() - get_mousepad_in_use()))
+        self.mousepad_taken.setText("{} Mousepads are in use".format(get_mousepad_in_use()))
+    
+    def room_stats_timer(self):
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_room_stats)
+        self.timer.start(600)
+        
+
+    def reset_stats_display(self):
+        reset_count()
+        self.update_room_stats()
+        
     def throw_error(self, message):
         error = QMessageBox()
         error.setWindowTitle("Error")

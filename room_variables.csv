@@ -2,7 +2,7 @@ Variable, amount
 Time_limit,1
 PC_count,7
 Headset_count,7
-Keyboard_count,4
-Mouse_count,5
-Mousepad_count,4
-Controller_count,3
+Keyboard_count,7
+Mouse_count,7
+Mousepad_count,0
+Controller_count,7

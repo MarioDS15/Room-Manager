@@ -214,41 +214,42 @@ def edit_inventory(itemDict, returning = False):
     #set_PC_count(get_PC_in_use() - 1)
     if returning:
         if itemDict["Keyboard"] and get_keyboard_in_use() < get_max_keyboard_count():
-            set_keyboard_in_use(get_keyboard_in_use() + 1)
+            set_keyboard_in_use(get_keyboard_in_use() - 1)
         if itemDict['Mouse'] and get_mouse_in_use() < get_max_mouse_count():
-            set_mouse_in_use(get_mouse_in_use() + 1)
+            set_mouse_in_use(get_mouse_in_use() - 1)
         if itemDict['Headset'] and get_headset_in_use() < get_max_headset_count():
-            set_headset_in_use(get_headset_in_use() + 1)
+            set_headset_in_use(get_headset_in_use() - 1)
         if itemDict['Controller'] and get_controller_in_use() < get_max_controller_count():
-            set_controller_in_use(get_controller_in_use() + 1)
+            set_controller_in_use(get_controller_in_use() - 1)
         if itemDict['Mousepad'] and get_mousepad_in_use() < get_max_mousepad_count():
-            set_mousepad_in_use(get_mousepad_in_use() + 1)
+            set_mousepad_in_use(get_mousepad_in_use() - 1)
+        set_PC_in_use(get_PC_in_use() - 1)
     else:
         if itemDict["Keyboard"]:
-            set_keyboard_in_use(get_keyboard_in_use() - 1)
+            set_keyboard_in_use(get_keyboard_in_use() + 1)
         if itemDict['Mouse']:
-            set_mouse_in_use(get_mouse_in_use() - 1)
+            set_mouse_in_use(get_mouse_in_use() + 1)
         if itemDict['Headset']:
-            set_headset_in_use(get_headset_in_use() - 1)
+            set_headset_in_use(get_headset_in_use() + 1)
         if itemDict['Controller']:
-            set_controller_in_use(get_controller_in_use() - 1)
+            set_controller_in_use(get_controller_in_use() + 1)
         if itemDict['Mousepad']:
-            set_mousepad_in_use(get_mousepad_in_use() - 1)
+            set_mousepad_in_use(get_mousepad_in_use() + 1)
 
 
 def checkInventory():
     message = ""
-    if get_headset_in_use() <= 0:
+    if get_headset_in_use() >= get_max_headset_count():
         message += "Headsets \n "
-    if get_mouse_in_use() <= 0:
+    if get_mouse_in_use() >= get_max_mouse_count():
         message += "Mice \n"
-    if get_keyboard_in_use() <= 0:
+    if get_keyboard_in_use() >= get_max_keyboard_count():
         message += "Keyboards \n"
-    if get_controller_in_use() <= 0:
+    if get_controller_in_use() >= get_max_controller_count():
         message += "Controllers \n"
-    if get_mousepad_in_use() <= 0:
+    if get_mousepad_in_use() >= get_max_mousepad_count():
         message += "Mousepads \n"
-    if get_PC_in_use() <= 0:
+    if get_PC_in_use() >= get_max_pc_count():
         message += "PCs \n"
     if message == "":
         return False

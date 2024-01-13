@@ -160,3 +160,20 @@ def get_controller_in_use():
 
 def get_mousepad_in_use():
     return mousepad_in_use
+
+def reset_count():
+    global PC_in_use
+    global headset_in_use
+    global mouse_in_use
+    global keyboard_in_use
+    global headset_in_use
+    global controller_in_use
+    global mousepad_in_use
+    set_headset_in_use(0)
+    set_mouse_in_use(0)
+    set_keyboard_in_use(0)
+    set_controller_in_use(0)
+    set_mousepad_in_use(0)
+    set_PC_in_use(0 )
+
+#reset_count()
