@@ -55,23 +55,22 @@ Time entry option (Military v not) [DONE]
 Right click [DONE]
 Data validation (Prevents invalid usernames/id) [DONE]
 Check if student already checked in [DONE]
+Add checkout everyone button 
+Add warning if items are out
+Verification of id removes name
+Fix clear checkboxes after submitting
 
 In progress:
-Add tabs [Done, fix visuals]
-Add checkout everyone button (Does not work so far)
-Fix layout
+
 
 To-do:
 Edit a students entry [Item, ID, Name]
 Try installing on mac, check for size changes
-Add warning if items are out
 Add FAQ
-Clear checkboxes after submitting
+Add check out time to log entries 
 Quick fix (undo checkout?)
 Fix hovering over checkboxes [DONE]
 Add option to only require ID
-Verification of id removes name
-Check if student exceeded amount for today (Idk if needed)
 Separate sheets by weeks
 Convert to application
 Connect to google sheet (https://www.twilio.com/blog/2017/02/an-easy-way-to-read-and-write-to-a-google-spreadsheet-in-python.html)
