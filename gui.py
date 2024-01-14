@@ -7,22 +7,21 @@ from datetime import datetime, timedelta
 from StudentWidget import *
 from data_loader import *
 from room_stats_gui import *
+from log_gui import *
 import csv
 import sys
 
 class Application(QMainWindow):
     def __init__(self):
         super().__init__()
-        
-        #self.theme()
+
         self.setWindowTitle("Room Entry Logger")
         self.setMinimumSize(900, 500)
-        # Create and set grid layout
+
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
         self.main_layout = QGridLayout(central_widget)
 
-        # Data entry nested grid layout
         self.dataWidget = QWidget()
         self.data_layout = QGridLayout(self.dataWidget)
         self.main_layout.addWidget(self.dataWidget, 0, 0)
@@ -70,6 +69,17 @@ class Application(QMainWindow):
     def on_room_stats_window_destroyed(self):
         self.secondary_window = None
 
+    def open_logs(self):
+        if self.secondary_window is None:
+            self.secondary_window = LogsWindow()
+            self.secondary_window.show()
+            self.secondary_window.setAttribute(Qt.WA_DeleteOnClose)
+            self.secondary_window.destroyed.connect(self.open_logs_window_destroyed)
+        else:   
+            QMessageBox.information(self, 'Window Already Open', 'The secondary window is already open.')
+
+    def open_logs_window_destroyed(self):
+        self.secondary_window = None
 
     def toolbar(self):
         self.toolbar = QToolBar("Toolbar")
@@ -77,19 +87,21 @@ class Application(QMainWindow):
         toolbar.setMovable(False)
         toolbar.setFloatable(False)
 
-        # Add a button to the toolbar
         self.action_button = toolbar.addAction("Application Settings")
-        #self.action_button.triggered.connect(self.action)
+
 
         # Add a separator
         #toolbar.addSeparator()
 
-        # Add a button to the toolbar
+
         self.roomSettings = toolbar.addAction("Room Settings")
         self.roomSettings.triggered.connect(self.open_room_settings)
 
         self.roomStats = toolbar.addAction("Room Stats")
         self.roomStats.triggered.connect(self.open_room_stats)
+    
+        self.logs = toolbar.addAction("Logs")
+        self.logs.triggered.connect(self.open_logs)
 
     def dataEntryGUI(self):
         # Name entry widgets
@@ -185,12 +197,12 @@ class Application(QMainWindow):
     def log(self): #Reject based on verification
         if verify_id(self.id_entry.text()) == False:
             self.throwPrompt("Entry Error", "Invalid ID number entered")
-            #self.id_entry.clear()
             return
         if verify_name(self.name_entry.text()) == False:
             self.throwPrompt("Entry Error", "Invalid name entered")
-            #self.name_entry.clear()
             return
+        
+        # Obtain information from the data entry fields
         name = self.name_entry.text()
         id_number = id_convert(self.id_entry.text())
         keyboard = self.keyboard_cb.isChecked()
@@ -206,14 +218,14 @@ class Application(QMainWindow):
             self.throwPrompt("Entry Error", f"Entry with ID {id_number} already exists.")
             self.clear()
             return
-        print(itemDict)
+        
+        # Check if any items are out of stock
         if(checkInventory() != False):
             msg = "The following items requested are out of stock: " + checkInventory() + "\n" + "The student has still been checked in but the items might be out of stock, check room stats to monitor the items in use or check if any student forgot to check out."
             self.throwPrompt("Inventory Warning", msg)
         edit_inventory(itemDict, False)
         self.remove_selected_item(self.checkedInList)
         self.clear()
-        # Clear the text fields
         self.clear()
 
     def checkOut(self, list_widget = None, selected_student = None):
@@ -222,11 +234,14 @@ class Application(QMainWindow):
         if selected_student is None:
             self.throwPrompt("Checkout Error", "No student selected")
             return
+        
+        # Obtain the information from the selected item
         id = list_widget_to_id(selected_student)
         dict = items_to_dict(CURRENT_STUDENTS_FILE, id)
-        edit_inventory(dict, True)
-        remove_entry(id)
-        self.remove_selected_item(list_widget)
+        edit_inventory(dict, True) # Edit the inventory to reflect the checkout
+        log_checkout(id) # Log the checkout in the log file
+        remove_entry(id) # Remove the entry from the current entries file
+        self.remove_selected_item(list_widget) # Remove the entry from the display
 
     def show_context_menu(self, position, list_widget):
         item = list_widget.itemAt(position)
@@ -234,12 +249,11 @@ class Application(QMainWindow):
             context_menu, action1, action2 = item.createContextMenu()
             selected_action = context_menu.exec_(list_widget.viewport().mapToGlobal(position))
 
-            if selected_action == action1:
-                #self.list_widget.setCurrentItem(item)
+            if selected_action == action1: # Checkout
                 list_widget.setCurrentItem(item)
                 self.checkOut(list_widget)
             
-            elif selected_action == action2:
+            elif selected_action == action2: # Check items borrowed
                 list_widget.setCurrentItem(item)
                 self.returnItems(list_widget)
 
@@ -254,7 +268,7 @@ class Application(QMainWindow):
         self.update_display()
 
     def populate(self): 
-        checkedInDict = load_current_sessions("current_entries.csv")
+        checkedInDict = load_current_sessions(CURRENT_STUDENTS_FILE)
         for id, session_info in checkedInDict.items():
             # Extract individual data from session_info
             name = session_info[0]
@@ -265,13 +279,11 @@ class Application(QMainWindow):
             self.checkedInList.addItem(csv_to_list_widget(name, id, check_in_time))  
 
     def populateTimeout(self):
-        checkedInDict = load_expired_sessions("current_entries.csv")
+        checkedInDict = load_expired_sessions(CURRENT_STUDENTS_FILE)
         for id, session_info in checkedInDict.items():
-            # Extract individual data from session_info
             name = session_info[0]
             id = session_info[1]
             check_in_time = session_info[2]
-            # Now pass these as separate arguments
             self.timeoutList.addItem(csv_to_list_widget(name, id, check_in_time))
 
     def update_display(self):
@@ -345,7 +357,6 @@ class Application(QMainWindow):
         app.setStyle('Fusion')
     
     def remove_selected_item(self,list_widget):
-        # Get the selected item, None if no item is selected
         selected_item = list_widget.currentItem()
 
         if selected_item:  # Check if there is a selected item
@@ -356,14 +367,19 @@ class Application(QMainWindow):
 
     def returnItems(self, list_widget = None):
         selected_student = list_widget.currentItem()
+        # Check if there is a selected item
         if selected_student is None:
             self.throwPrompt("Checkout Error", "No student selected")
             return
+        
+        # Obtain the information from the selected item
         id = list_widget_to_id(selected_student)
         name = get_student_name(id)
         items = items_to_dict(CURRENT_STUDENTS_FILE, id)
         message = f"{name} has checked out the following: \n"
         anyItems = False
+        
+        # Prepare the message to display showing which items have been checked out
         for item in items:
             if items[item] == True:
                 anyItems = True
@@ -377,7 +393,8 @@ class Application(QMainWindow):
     
     def remove_all_list_widgets(self, list_widget):
         list_widget.clear()
-    #Runs every minute to update people that got timed out
+
+    #Runs every time frame to update people that got timed out
     def routine(self):
         print("Routine")
         self.remove_all_list_widgets(self.checkedInList)
@@ -390,7 +407,7 @@ class Application(QMainWindow):
             print(i)
             self.checkOut(list_widget, list_widget.item(i))
         self.remove_all_list_widgets(list_widget)
-        if(list_widget == self.checkedInList):
+        if(list_widget == self.checkedInList): # If checking out current students, expired students need to be updated
             self.checkout_all(self.timeoutList)
 
     def throwPrompt(self, title, message):

@@ -1,0 +1,8 @@
+Name,ID,Check-in time,Equipment,checkout time
+Test,G12121212,2024-01-14 14:42:04,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-14 14:42:10,2024-01-14 16:45:06
+Test,G12211212,2024-01-14 14:42:18,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-14 14:42:28
+dsfsdf,G43324444,2024-01-14 14:42:26,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-14 14:42:30
+gdfgdfgdfg,G23121211,2024-01-14 14:42:35,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-14 14:42:44
+fdsfsdfs,G22334455,2024-01-14 14:42:39,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-14 14:42:41
+Test,G12121212,2024-01-14 16:35:11,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-14 16:45:06
+Testy,G12121213,2024-01-14 16:35:20,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-14 16:45:07

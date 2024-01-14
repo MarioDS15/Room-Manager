@@ -31,11 +31,12 @@ if __name__ == "__main__":
     from data_handling import *
     from PyQt5.QtWidgets import QApplication
     from gui import Application
+
     # Create an instance of QApplication
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
     app.setStyleSheet(stylesheet)
-    # Create an instance of your application's main window
+
     main_window = Application()
     
     # Show the main window
@@ -61,7 +62,7 @@ Verification of id removes name
 Fix clear checkboxes after submitting
 
 In progress:
-
+Log view window
 
 To-do:
 Edit a students entry [Item, ID, Name]

@@ -10,7 +10,7 @@ CSV_FILE_PATH = CURRENT_STUDENTS_FILE
 
 
 
-def id_exists_in_file(id, file_path):
+def id_exists_in_file(id, file_path = CURRENT_STUDENTS_FILE):
     with open(file_path, 'r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
         for row in reader:
@@ -22,18 +22,36 @@ def log_entry(name, id, itemDict):
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
     # Check if the ID already exists in current_entries.csv
-    if id_exists_in_file(id, 'current_entries.csv'):
+    if id_exists_in_file(id, CURRENT_STUDENTS_FILE):
+        print(f"ID {id} already exists in current_entries.csv")
         raise ValueError(f"ID {id} already exists in current_entries.csv")
         
 
     # If the ID is unique, write to both files
-    for file_path in ['log_entries.csv', 'current_entries.csv']:
+    for file_path in [LOG_FILE, CURRENT_STUDENTS_FILE]:
         with open(file_path, mode='a', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             writer.writerow([name, id, timestamp, itemDict])
     
     return csv_to_list_widget(name, id, timestamp)
-    
+
+def log_checkout(id):
+    updated_entries = []
+    current_time = datetime.now()
+
+    with open(LOG_FILE, newline='', encoding='utf-8') as file:
+        csvreader = csv.reader(file)
+        for row in csvreader:
+            # Assuming the ID is in the 2nd column (index 1)
+            if row and row[1] == id:
+                row.append(current_time.strftime('%Y-%m-%d %H:%M:%S'))  # Add current time to the row
+            updated_entries.append(row)
+
+    # Write the updated data back to the CSV file
+    with open(LOG_FILE, 'w', newline='', encoding='utf-8') as file:
+        csvwriter = csv.writer(file)
+        csvwriter.writerows(updated_entries)
+
 def load_current_sessions(csv_file_path):
     current_sessions = {}
     now = datetime.now()

@@ -1,35 +1,32 @@
 import csv
 import ast
 
-USER_SETTINGS = "user_settings.csv"
-ROOM_FILE = "room_variables.csv"
-CURRENT_STUDENTS_FILE = 'current_entries.csv'
-LOG_FILE = 'log_entries.csv'
-ITEMS_FILE = 'inventory_in_use.csv'
+USER_SETTINGS = "csvFiles/user_settings.csv"
+ROOM_FILE = "csvFiles/room_variables.csv"
+CURRENT_STUDENTS_FILE = 'csvFiles/current_entries.csv'
+LOG_FILE = 'csvFiles/log_entries.csv'
+ITEMS_FILE = 'csvFiles/inventory_in_use.csv'
 
 def csv_to_dict(csv_file_path):
     settings = {}
     with open(csv_file_path, mode='r', newline='') as csvfile:
         csvreader = csv.reader(csvfile)
-        next(csvreader, None)  # Skip the header row
+        next(csvreader, None)  
         for row in csvreader:
-            if row and len(row) == 2:  # Ensure the row has exactly two columns
+            if row and len(row) == 2:  
                 key, value = row[0].strip(), row[1].strip()
-                settings[key] = int(value)  # Convert value to int since they appear to be numeric
+                settings[key] = int(value) 
     return settings
 
 def update_row(csv_file_path, key, new_value):
-    # Read the CSV file into a list of lists
     with open(csv_file_path, mode='r', newline='') as csvfile:
         csvreader = csv.reader(csvfile)
         rows = list(csvreader)
 
-    # Update the value in the list of lists
     for row in rows:
-        if row and row[0].strip() == key:  # Ensure the row has at least one column
-            row[1] = str(new_value)  # Convert value to string since they appear to be numeric
+        if row and row[0].strip() == key:  
+            row[1] = str(new_value)  
 
-    # Write the updated list of lists back to the CSV file
     with open(csv_file_path, mode='w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile)
         csvwriter.writerows(rows)
@@ -37,32 +34,23 @@ def update_row(csv_file_path, key, new_value):
 def items_to_dict(csv_file_path, id):
     with open(csv_file_path, mode='r', newline='') as csvfile:
         csvreader = csv.reader(csvfile)
-        next(csvreader, None)  # Skip the header row
+        next(csvreader, None)  
         for row in csvreader:
-            if row and row[1].strip() == id:  # Ensure the row has at least one column
+            if row and row[1].strip() == id:  
                 dictionary_str = row[3].strip()
                 dictionary = ast.literal_eval(dictionary_str)
                 return dictionary
     return None
 
 def csv_to_dict(csv_file_path = ROOM_FILE):
-    # Initialize an empty dictionary
     settings_dict = {}
-    
-    # Open the CSV file for reading
     with open(csv_file_path, mode='r', newline='', encoding='utf-8') as csvfile:
-        # Create a CSV reader object
         csvreader = csv.reader(csvfile)
-        next(csvreader)  # Skip the header row
-        
-        # Iterate over the rows in the CSV
+        next(csvreader) 
         for row in csvreader:
-            # The first column is the key, and the second column is the value
             key = row[0]
             value = row[1]
-            settings_dict[key] = int(value)  # Convert value to integer
-    
-    # Return the dictionary
+            settings_dict[key] = int(value)  
     return settings_dict
 
 
@@ -70,9 +58,9 @@ def csv_to_dict(csv_file_path = ROOM_FILE):
 def get_student_name(id):
     with open(CURRENT_STUDENTS_FILE, mode='r', newline='') as csvfile:
         csvreader = csv.reader(csvfile)
-        next(csvreader, None)  # Skip the header row
+        next(csvreader, None)  
         print(id)
         for row in csvreader:
-            if row and row[1].strip() == id:  # Ensure the row has at least one column
+            if row and row[1].strip() == id: 
                 return row[0].strip()
     return None

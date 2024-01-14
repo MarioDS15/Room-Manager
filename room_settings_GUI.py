@@ -7,13 +7,11 @@ class RoomSettingWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Room settings Window')
-        #self.setMinimumSize(400, 700)
-        # Create and set grid layout
+
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
         self.main_layout = QGridLayout(central_widget)
 
-        # Data entry nested grid layout
         self.dataWidget = QWidget()
         self.item_layout = QGridLayout(self.dataWidget)
         self.main_layout.addWidget(self.dataWidget, 1, 0)
