@@ -23,7 +23,6 @@ def log_entry(name, id, itemDict):
     
     # Check if the ID already exists in current_entries.csv
     if id_exists_in_file(id, CURRENT_STUDENTS_FILE):
-        print(f"ID {id} already exists in current_entries.csv")
         raise ValueError(f"ID {id} already exists in current_entries.csv")
         
 
@@ -34,6 +33,18 @@ def log_entry(name, id, itemDict):
             writer.writerow([name, id, timestamp, itemDict])
     
     return csv_to_list_widget(name, id, timestamp)
+
+def check_if_remaining_session(id):
+    todayEntries = find_entries_from_today()
+    if todayEntries:
+        print(get_session_limit())
+        if sum(entry['ID'] == id for entry in todayEntries) <= get_session_limit():
+            print("True")
+            return True
+    else:
+        return True
+    return False
+
 
 def log_checkout(id):
     updated_entries = []
@@ -169,14 +180,10 @@ def timeover():
             # and in the format 'YYYY-MM-DD HH:MM:SS'
             if(row == []):
                 continue
-            print(row)
             entry_time = datetime.strptime(row[2], '%Y-%m-%d %H:%M:%S')
 
             if checkTimeout:
                 updated_entries.append(row)
-            else:
-                print("Not timed out")
-
     # Write the updated data back to the CSV file
     with open("current_entries.csv", 'w', newline='', encoding='utf-8') as file:
         csvwriter = csv.writer(file)
@@ -273,4 +280,25 @@ def checkInventory():
     if message == "":
         return False
     return message
+
+prevName = ""  
+prevID = ""
+prevItems = {}
+prevCheckInTime = ""
+
+prevNameTimed = ""
+prevIDTimed = ""
+prevItemsTimed = {}
+prevCheckInTimeTimed = ""
+
+def set_prev_info(time, name, id):
+    global prevName
+    global prevID
+    global prevCheckInTime
+    prevCheckInTime = time
+    prevName = name
+    prevID = id
+
+def get_prev_info():
+    return f"[{prevCheckInTime}] {prevName} (ID: {prevID})"
 

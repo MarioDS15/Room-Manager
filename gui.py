@@ -8,16 +8,21 @@ from StudentWidget import *
 from data_loader import *
 from room_stats_gui import *
 from log_gui import *
+from item_edit_gui import *
 import csv
 import sys
+from csv_handling import *
 
 class Application(QMainWindow):
+        
+
+    #upload_file('current_entries.csv', 'csvFiles/current_entries.csv', 'text/csv')
     def __init__(self):
         super().__init__()
 
         self.setWindowTitle("Room Entry Logger")
         self.setMinimumSize(900, 500)
-
+        #self.setFixedSize(900, 500)
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
         self.main_layout = QGridLayout(central_widget)
@@ -39,7 +44,7 @@ class Application(QMainWindow):
         self.populateTimeout()
         self.timer()
         self.secondary_window = None
-
+    
     def timer(self):
         self.timer = QTimer()
         self.timer.timeout.connect(self.routine)
@@ -52,7 +57,7 @@ class Application(QMainWindow):
             self.secondary_window.setAttribute(Qt.WA_DeleteOnClose)  # Ensure the window is deleted after closing
             self.secondary_window.destroyed.connect(self.on_room_settings_window_destroyed)
         else:
-            QMessageBox.information(self, 'Window Already Open', 'The secondary window is already open.')     
+            self.secondary_window.show()
 
     def on_room_settings_window_destroyed(self):
             self.secondary_window = None  # Reset the placeholder when the window is closed
@@ -63,8 +68,8 @@ class Application(QMainWindow):
             self.secondary_window.show()
             self.secondary_window.setAttribute(Qt.WA_DeleteOnClose)
             self.secondary_window.destroyed.connect(self.on_room_stats_window_destroyed)
-        else:   
-            QMessageBox.information(self, 'Window Already Open', 'The secondary window is already open.')
+        else:
+            self.secondary_window.show()
 
     def on_room_stats_window_destroyed(self):
         self.secondary_window = None
@@ -75,10 +80,29 @@ class Application(QMainWindow):
             self.secondary_window.show()
             self.secondary_window.setAttribute(Qt.WA_DeleteOnClose)
             self.secondary_window.destroyed.connect(self.open_logs_window_destroyed)
-        else:   
-            QMessageBox.information(self, 'Window Already Open', 'The secondary window is already open.')
+        else:
+            self.secondary_window.show()
 
     def open_logs_window_destroyed(self):
+        self.secondary_window = None
+
+    def open_edit_items(self, list_widget = None):
+        if self.secondary_window is None:
+            if list_widget.currentItem() is not None :
+                id = list_widget_to_id(list_widget.currentItem())
+                name = get_student_name(id)
+                dict = items_to_dict(CURRENT_STUDENTS_FILE, id)
+            else:
+                self.throwPrompt("Edit Error", "No student selected")
+                return
+            self.secondary_window = EditItemsWindow(name, id, dict)
+            self.secondary_window.show()
+            self.secondary_window.setAttribute(Qt.WA_DeleteOnClose)
+            self.secondary_window.destroyed.connect(self.open_edit_items_window_destroyed)
+        else:
+            self.secondary_window.show()
+
+    def open_edit_items_window_destroyed(self):
         self.secondary_window = None
 
     def toolbar(self):
@@ -87,7 +111,7 @@ class Application(QMainWindow):
         toolbar.setMovable(False)
         toolbar.setFloatable(False)
 
-        self.action_button = toolbar.addAction("Application Settings")
+        #self.action_button = toolbar.addAction("Application Settings")
 
 
         # Add a separator
@@ -167,6 +191,12 @@ class Application(QMainWindow):
         self.checkedInlayout.addWidget(self.item_button, 2, 1)  
         self.item_button.clicked.connect(lambda: self.returnItems(self.checkedInList))
 
+        self.undo_button = QPushButton("Undo Checkout")
+        #self.checkedInlayout.addWidget(self.undo_button, 2, 2)  # Spanning 2 columns
+        self.undo_button.clicked.connect(self.undo_checkout)
+
+        self.checkedInList.itemSelectionChanged.connect(lambda: self.clear_selection(self.checkedInList))
+
     def timeoutGUI(self):
         self.timeoutWidget = QWidget()
         self.timeoutlayout = QGridLayout(self.timeoutWidget)
@@ -188,6 +218,8 @@ class Application(QMainWindow):
         self.extra_button = QPushButton("Checkout all students")
         self.timeoutlayout.addWidget(self.extra_button, 2, 1)  
         self.extra_button.clicked.connect(lambda: self.checkout_all(self.checkedInList))
+
+        self.timeoutList.itemSelectionChanged.connect(lambda: self.clear_selection(self.timeoutList))
 
     def checkout_buttons_gui(self):
         self.checkout_button = QPushButton("Checkout student")
@@ -211,22 +243,39 @@ class Application(QMainWindow):
         controller = self.controller_cb.isChecked()
         mousepad = self.mousepad_cb.isChecked()
         itemDict = {"Keyboard": keyboard, "Mouse": mouse, "Headset": headset, "Controller": controller, "Mousepad": mousepad}
-
+        if check_if_remaining_session(id_number) == False:
+            self.throwPrompt("Entry Error", "Student already exceeded amount of daily sessions allowed.")
+            return
         try:
             self.checkedInList.addItem(log_entry(name, id_number, itemDict))
         except:
             self.throwPrompt("Entry Error", f"Entry with ID {id_number} already exists.")
             self.clear()
             return
-        
+        #self.set_get_prev_info(datetime.now().strftime("%H:%M:%S"), name, id_number)
         # Check if any items are out of stock
         if(checkInventory() != False):
             msg = "The following items requested are out of stock: " + checkInventory() + "\n" + "The student has still been checked in but the items might be out of stock, check room stats to monitor the items in use or check if any student forgot to check out."
             self.throwPrompt("Inventory Warning", msg)
         edit_inventory(itemDict, False)
-        self.remove_selected_item(self.checkedInList)
+        #self.remove_selected_item(self.checkedInList)
         self.clear()
         self.clear()
+ 
+    def undo_checkout(self):
+        self.checkedInList.addItem(get_prev_info())
+        self.routine()
+
+    def clear_selection(self, selected_list_widget):
+        if selected_list_widget.currentItem() is None:
+            return
+        currentSelected = selected_list_widget.currentItem()
+        if selected_list_widget != self.checkedInList:
+            self.checkedInList.clearSelection()
+            #self.timeoutList.setCurrentItem(currentSelected)
+        if selected_list_widget != self.timeoutList:
+            self.timeoutList.clearSelection()
+            #self.checkedInList.setCurrentItem(currentSelected)
 
     def checkOut(self, list_widget = None, selected_student = None):
         if selected_student is None:
@@ -234,10 +283,13 @@ class Application(QMainWindow):
         if selected_student is None:
             self.throwPrompt("Checkout Error", "No student selected")
             return
-        
-        # Obtain the information from the selected item
+        name = get_student_name(selected_student)
         id = list_widget_to_id(selected_student)
         dict = items_to_dict(CURRENT_STUDENTS_FILE, id)
+        time = get_student_time(id)
+        set_prev_info(time, name, id)
+        # Obtain the information from the selected item
+
         edit_inventory(dict, True) # Edit the inventory to reflect the checkout
         log_checkout(id) # Log the checkout in the log file
         remove_entry(id) # Remove the entry from the current entries file
@@ -246,7 +298,7 @@ class Application(QMainWindow):
     def show_context_menu(self, position, list_widget):
         item = list_widget.itemAt(position)
         if isinstance(item, StudentWidget):
-            context_menu, action1, action2 = item.createContextMenu()
+            context_menu, action1, action2, action3 = item.createContextMenu()
             selected_action = context_menu.exec_(list_widget.viewport().mapToGlobal(position))
 
             if selected_action == action1: # Checkout
@@ -256,6 +308,10 @@ class Application(QMainWindow):
             elif selected_action == action2: # Check items borrowed
                 list_widget.setCurrentItem(item)
                 self.returnItems(list_widget)
+            
+            elif selected_action == action3:
+                list_widget.setCurrentItem(item)
+                self.open_edit_items(list_widget)
 
     def clear(self):
         self.name_entry.clear()
@@ -388,6 +444,7 @@ class Application(QMainWindow):
             message = f"{name} has not checked out any items"
         self.throwPrompt("Items Checked Out", message)
 
+
     def remove_list_widget(self, list_widget):
         list_widget.takeItem(list_widget.row(list_widget))
     
@@ -408,7 +465,9 @@ class Application(QMainWindow):
             self.checkOut(list_widget, list_widget.item(i))
         self.remove_all_list_widgets(list_widget)
         if(list_widget == self.checkedInList): # If checking out current students, expired students need to be updated
+            reset_count()
             self.checkout_all(self.timeoutList)
+
 
     def throwPrompt(self, title, message):
         QMessageBox.information(self, title, message)

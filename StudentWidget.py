@@ -13,9 +13,11 @@ class StudentWidget(QListWidgetItem):
         menu = QMenu()
         action1 = QAction('Checkout Student', menu)
         action2 = QAction('Check Items', menu)
+        action3 = QAction('Edit Items', menu)
         menu.addAction(action1)
         menu.addAction(action2)
-        return menu, action1, action2
+        menu.addAction(action3)
+        return menu, action1, action2, action3
 
     def action_triggered(self, item, action_name):
         print(f"{action_name} triggered for {item.text()}")

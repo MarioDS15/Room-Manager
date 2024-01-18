@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QCheckBox, QListWidget, QListWidgetItem, QMessageBox, QComboBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QMenu, QCheckBox, QListWidget, QListWidgetItem, QMessageBox, QComboBox, QAction
 from PyQt5.QtCore import Qt
 from room_variables import *
 
@@ -32,6 +32,11 @@ class LogsWindow(QMainWindow):
         self.logs = QListWidget()
         self.main_layout.addWidget(self.logs, 3, 0, 1, 3)
 
+        self.logs.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.logs.customContextMenuRequested.connect(self.show_context_menu)
+        #self.setCentralWidget(self.logs)
+
+
     def search_logs(self, text):
         # Clear the QListWidget before displaying new results
         self.logs.clear()
@@ -47,4 +52,32 @@ class LogsWindow(QMainWindow):
                     item_text = f"{row['Name']}, {row['ID']}, {row['Check-in time']}"
                     self.logs.addItem(item_text)
 
-    
+    def show_context_menu(self, position):
+        context_menu = QMenu(self.logs)
+        check_items_action = QAction("Check items", self.logs)
+        context_menu.addAction(check_items_action)
+        check_items_action.triggered.connect(self.check_items)
+        context_menu.exec_(self.logs.mapToGlobal(position))
+
+    def check_items(self, id):
+        selected_item = self.logs.currentItem()
+        if selected_item:
+            display_text = selected_item.text()
+            id = display_text.split(',')[1].strip()
+            items = items_to_dict(LOG_FILE, id)
+            name = get_student_name(id)
+            message = "Student has checked out:\n"
+            for item in items:
+                if items[item] == True:
+                    anyItems = True
+                    message += f"{item}\n"
+            if anyItems == False:
+                message = f"{name} has not checked out any items"
+            self.throw_message(message)
+
+    def throw_message(self, message):
+        error = QMessageBox()
+        error.setWindowTitle("Error")
+        error.setText(message)
+        #error.setIcon(QMessageBox.Critical)
+        error.exec_()

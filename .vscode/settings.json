@@ -4,6 +4,8 @@
         "csvfile",
         "csvreader",
         "csvwriter",
+        "Esports",
+        "gspread",
         "Inlayout",
         "Mousepads",
         "timeoutlabel",

@@ -1,6 +1,7 @@
 import subprocess
 import sys
 from stylesheet import stylesheet
+
 #border: 1px solid red;
 
 
@@ -24,18 +25,27 @@ if __name__ == "__main__":
 
     required_packages = [
         'PyQt5',
-        'requests',  # Add any other package names here
+        'requests',
+        'pandas',
+        'gspread', 
+        'google-api-python-client',
+        'google-auth-httplib2',
+        'google-auth-oauthlib',
+        'oauth2client', # Add any other package names here
     ]
 
     install_packages(required_packages)
     from data_handling import *
     from PyQt5.QtWidgets import QApplication
     from gui import Application
-
+    from google_auth_oauthlib.flow import InstalledAppFlow
+    from googleapiclient.discovery import build
+    import os
     # Create an instance of QApplication
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
     app.setStyleSheet(stylesheet)
+
 
     main_window = Application()
     
@@ -60,20 +70,26 @@ Add checkout everyone button
 Add warning if items are out
 Verification of id removes name
 Fix clear checkboxes after submitting
+Fix hovering over checkboxes [DONE]
+Add check out time to log entries 
+Limit sessions per day
+Only one list widget should have a highlighted person
+Log view window
+Edit items
 
 In progress:
-Log view window
+Application
+    -Add option to only require ID
 
 To-do:
+Check if first run
+User entry to edit limit per sessions [DONE]
 Edit a students entry [Item, ID, Name]
-Try installing on mac, check for size changes
 Add FAQ
-Add check out time to log entries 
-Quick fix (undo checkout?)
-Fix hovering over checkboxes [DONE]
-Add option to only require ID
+Try installing on mac, check for size changes
 Separate sheets by weeks
 Convert to application
+Check out all button -> undo check out might 
 Connect to google sheet (https://www.twilio.com/blog/2017/02/an-easy-way-to-read-and-write-to-a-google-spreadsheet-in-python.html)
 """
 

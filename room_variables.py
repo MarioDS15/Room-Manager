@@ -4,6 +4,8 @@ import csv
 
 
 session_time_limit = timedelta(hours=2)
+session_limit = 1
+
 max_pc_count = 10
 screen_size = 10
 max_headset_count = 10
@@ -41,7 +43,7 @@ def set_mouse_count(mouse_count):
     global max_mouse_count
     update_row(ROOM_FILE, 'Mouse_count', mouse_count)
     max_mouse_count = int(mouse_count)
-    print("Updated mouse count " + str(max_mouse_count))
+    #print("Updated mouse count " + str(max_mouse_count))
 
 def set_keyboard_count(keyboard_count):
     global max_keyboard_count
@@ -65,7 +67,7 @@ def set_mousepad_count(mousepad_count):
 
 def set_PC_in_use(PC_count):
     global PC_in_use
-    print("PC count " + str(PC_count))
+    #print("PC count " + str(PC_count))
     update_row(ITEMS_FILE, 'PC_count', PC_count)
     PC_in_use = int(PC_count)
 
@@ -161,6 +163,10 @@ def get_controller_in_use():
 
 def get_mousepad_in_use():
     return mousepad_in_use
+
+def get_session_limit():
+    print("Session limits: " + str(session_limit))    
+    return session_limit
 
 def reset_count():
     global PC_in_use
