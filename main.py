@@ -90,6 +90,7 @@ Try installing on mac, check for size changes
 Separate sheets by weeks
 Convert to application
 Check out all button -> undo check out might 
+Handle if not connected to internet
 Connect to google sheet (https://www.twilio.com/blog/2017/02/an-easy-way-to-read-and-write-to-a-google-spreadsheet-in-python.html)
 """
 

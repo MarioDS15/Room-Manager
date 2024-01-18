@@ -12,7 +12,7 @@ from item_edit_gui import *
 import csv
 import sys
 from csv_handling import *
-
+from csv_handling import *
 class Application(QMainWindow):
         
 
@@ -289,11 +289,12 @@ class Application(QMainWindow):
         time = get_student_time(id)
         set_prev_info(time, name, id)
         # Obtain the information from the selected item
-
         edit_inventory(dict, True) # Edit the inventory to reflect the checkout
         log_checkout(id) # Log the checkout in the log file
         remove_entry(id) # Remove the entry from the current entries file
+        
         self.remove_selected_item(list_widget) # Remove the entry from the display
+        upload_csv_to_sheet(CURRENT_STUDENTS_FILE, "Sheet1") # Upload the current entries file to the google sheet
 
     def show_context_menu(self, position, list_widget):
         item = list_widget.itemAt(position)

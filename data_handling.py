@@ -49,7 +49,7 @@ def check_if_remaining_session(id):
 def log_checkout(id):
     updated_entries = []
     current_time = datetime.now()
-
+    print("Editing file")
     with open(LOG_FILE, newline='', encoding='utf-8') as file:
         csvreader = csv.reader(file)
         for row in csvreader:
