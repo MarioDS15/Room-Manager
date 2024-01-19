@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QCheckBox, QListWidget, QListWidgetItem, QMessageBox, QToolBar
 from PyQt5.QtCore import Qt
 from room_variables import *
+from csv_handling import *
 
 class RoomSettingWindow(QMainWindow):
     def __init__(self):
@@ -169,7 +170,7 @@ class RoomSettingWindow(QMainWindow):
                 self.Mousepad_count_entry.setText("")
 
             
-
+        upload_logs(ROOM_FILE)
         pass
 
     def throw_error(self, message):

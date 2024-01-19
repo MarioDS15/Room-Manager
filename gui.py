@@ -13,8 +13,10 @@ import csv
 import sys
 from csv_handling import *
 from csv_handling import *
+import threading
+
 class Application(QMainWindow):
-        
+
 
     #upload_file('current_entries.csv', 'csvFiles/current_entries.csv', 'text/csv')
     def __init__(self):
@@ -35,20 +37,29 @@ class Application(QMainWindow):
         self.title_label.setStyleSheet("color: white; font-size: 30px; font-weight: bold;")
         self.data_layout.addWidget(self.title_label, 0, 0, 1, 2)
         self.toolbar()
+        self.retrieve_all()
         self.dataEntryGUI()
         self.itemEntryGUI()
         self.checkedInGUI()
         self.timeoutGUI()
 
+
         self.populate()
         self.populateTimeout()
         self.timer()
+        self.otherTimer()
         self.secondary_window = None
     
     def timer(self):
         self.timer = QTimer()
         self.timer.timeout.connect(self.routine)
         self.timer.start(60000)
+ 
+    def otherTimer(self):
+        self.timer2 = QTimer()
+        self.timer2.timeout.connect(self.routine_second)
+        self.timer2.start(1000)
+
 
     def open_room_settings(self):
         if self.secondary_window is None:  # Check if the window does not exist
@@ -261,6 +272,8 @@ class Application(QMainWindow):
         #self.remove_selected_item(self.checkedInList)
         self.clear()
         self.clear()
+        upload_csv_to_sheet(CURRENT_STUDENTS_FILE, "Sheet1")
+        self.upload_logs()
  
     def undo_checkout(self):
         self.checkedInList.addItem(get_prev_info())
@@ -281,6 +294,9 @@ class Application(QMainWindow):
         if selected_student is None:
             selected_student = list_widget.currentItem()
         if selected_student is None:
+            selected_student = self.timeoutList.currentItem()
+            list_widget = self.timeoutList
+        if selected_student is None:
             self.throwPrompt("Checkout Error", "No student selected")
             return
         name = get_student_name(selected_student)
@@ -294,7 +310,16 @@ class Application(QMainWindow):
         remove_entry(id) # Remove the entry from the current entries file
         
         self.remove_selected_item(list_widget) # Remove the entry from the display
-        upload_csv_to_sheet(CURRENT_STUDENTS_FILE, "Sheet1") # Upload the current entries file to the google sheet
+        
+        self.upload_logs()
+
+    def upload_logs(self):
+        thread = threading.Thread(target=update_sheets)
+        thread.start()
+
+    def retrieve_all(self):
+        thread = threading.Thread(target=retrieve_all)
+        thread.start()
 
     def show_context_menu(self, position, list_widget):
         item = list_widget.itemAt(position)
@@ -343,76 +368,6 @@ class Application(QMainWindow):
             check_in_time = session_info[2]
             self.timeoutList.addItem(csv_to_list_widget(name, id, check_in_time))
 
-    def update_display(self):
-        pass 
-
-    def theme(self):
-        app = QApplication(sys.argv)
-        stylesheet = """
-        QWidget {  
-            background-color: #3e424a; /* Background color of the window */
-            
-        }
-        QLabel {
-            color: #979ca6;  /* White text color */
-            font: 16px;
-        }
-        QPushButton {
-            color: white; /* Text color */
-            background-color: #02781c; /* Background color */
-            font: bold 14px;
-            padding: 6px;
-        }
-        QPushButton:pressed {
-            background-color: #065718; /* Background color when pressed */
-            border-style: inset;
-        }
-        QLineEdit {
-            color: black;  /* Text color */
-            background-color: #595f6b;  /* Background color */
-            border: 1px solid #686e7a;  /* Border color and width */
-            border-radius: 2px;  /* Rounded corners */
-            padding: 2px;  /* Spacing around text */
-            margin: 4px;  /* Spacing around the widget */
-        }
-        QCheckBox {
-            spacing: 5px;
-            color: #979ca6;  /* White text color */
-        }
-        QCheckBox::indicator {
-            width: 15px;
-            height: 15px;
-            border: 3px solid #686e7a; /* Border color for unchecked state */
-            border-radius: 5px;
-            background: #595f6b; /* Background color for unchecked state */
-        }
-
-        /* Style for checked state */
-        QCheckBox::indicator:checked {
-            background: #3c4047; /* Background color for checked state */
-        }
-
-        /* Style for unchecked state with hover effect */
-        QCheckBox::indicator:hover:!checked {
-            border: 2px solid #595f6b; /* Border color on hover when unchecked */
-        }
-
-        /* Style for checked state with hover effect */
-            QCheckBox::indicator:hover:checked {
-            border: 2px solid #3c4047; /* Border color on hover when checked */
-        }
-        QListWidget::item {
-            color: black;  /* Text color */
-            background-color: #595f6b;  /* Background color */
-        }
-        QListWidget::item:selected {
-            color: white; /* Text color */
-            background-color: #02781c;
-        }
-
-        """
-        app.setStyle('Fusion')
-    
     def remove_selected_item(self,list_widget):
         selected_item = list_widget.currentItem()
 
@@ -445,7 +400,6 @@ class Application(QMainWindow):
             message = f"{name} has not checked out any items"
         self.throwPrompt("Items Checked Out", message)
 
-
     def remove_list_widget(self, list_widget):
         list_widget.takeItem(list_widget.row(list_widget))
     
@@ -455,10 +409,17 @@ class Application(QMainWindow):
     #Runs every time frame to update people that got timed out
     def routine(self):
         print("Routine")
+        self.retrieve_all()
         self.remove_all_list_widgets(self.checkedInList)
         self.populate()
         self.remove_all_list_widgets(self.timeoutList)
         self.populateTimeout()
+
+    def routine_second(self):
+        if not is_connected():
+            QMessageBox.information(self, "Connection Error", "No internet connection detected, please reconnect to the internet and restart the program.")
+            self.close()
+            return
 
     def checkout_all(self, list_widget):
         for i in range(list_widget.count()):
