@@ -8,6 +8,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from csv_handling import *
 from room_variables import *
+from csv_handling import *
 import os
 
 #border: 1px solid red;
@@ -67,21 +68,20 @@ Log view window
 Edit items
 Handle if not connected to internet
 Can't checkout individual that is timed out
-
-In progress:
-Application
-    -Add option to only require ID
-
-To-do:
-Check if first run
 User entry to edit limit per sessions [DONE]
 Edit a students entry [Item, ID, Name]
+Separate sheets by weeks
+
+In progress:
+Convert to application
+Synch to cloud
+
+To-do:
+Loading screen while app is booting up
+Handle race conditions
+Application
+    -Add option to only require ID
 Add FAQ
 Try installing on mac, check for size changes
-Separate sheets by weeks
-Convert to application
-Check out all button -> undo check out might 
-
-Connect to google sheet (https://www.twilio.com/blog/2017/02/an-easy-way-to-read-and-write-to-a-google-spreadsheet-in-python.html)
 """
 

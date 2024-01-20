@@ -66,7 +66,7 @@ def items_to_dict(csv_file_path, id):
                 return dictionary
     return None
 
-def update_dict(csv_file_path, id, dict):
+def update_dict(id, dict):
     """
     Updates the items borrowed from a specific user
 
@@ -78,6 +78,21 @@ def update_dict(csv_file_path, id, dict):
     Returns:
         dict: The dictionary of items borrowed
     """
+    file_path = LOG_FILE
+    with open(file_path, mode='r', newline='') as csvfile:
+        csvreader = csv.reader(csvfile)
+        rows = list(csvreader)
+    rowNumber = 0
+    for row in rows:
+        if rowNumber == get_row_number(id): 
+            row[3] = str(dict)  
+        rowNumber += 1
+
+    with open(file_path, mode='w', newline='') as csvfile:
+        csvwriter = csv.writer(csvfile)
+        csvwriter.writerows(rows)
+    
+    csv_file_path = CURRENT_STUDENTS_FILE
     with open(csv_file_path, mode='r', newline='') as csvfile:
         csvreader = csv.reader(csvfile)
         rows = list(csvreader)

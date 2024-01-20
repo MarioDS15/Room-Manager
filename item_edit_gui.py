@@ -94,5 +94,5 @@ class EditItemsWindow(QMainWindow):
                 set_controller_in_use(get_controller_in_use() - 1)
             elif self.dict['Controller'] == True and currentInv['Controller'] == False:
                 set_controller_in_use(get_controller_in_use() + 1)
-        update_dict(CURRENT_STUDENTS_FILE, self.id, self.dict)
+        update_dict(self.id, self.dict)
         self.close()

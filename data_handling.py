@@ -386,6 +386,7 @@ def get_entries_from_current_week(LOG_FILE):
         print("No entries in the log file.")
 
     write_entries_to_csv(entries_from_current_week)
+    return entries_from_current_week
 
 def write_entries_to_csv(entries, csv_file_path= CURRENT_WEEK):
     with open(csv_file_path, 'r', newline='', encoding='utf-8') as csvfile:
@@ -403,5 +404,7 @@ def write_entries_to_csv(entries, csv_file_path= CURRENT_WEEK):
         # Write the new entries
         for entry in entries:
             csvwriter.writerow(entry)
-            
-get_entries_from_current_week(LOG_FILE)
+
+def formatted_monday_date():
+    return get_monday_date().strftime('%m/%d/%Y')
+

@@ -16,6 +16,8 @@ creds = ServiceAccountCredentials.from_json_keyfile_name('client.json', scopes=s
 gc = gspread.authorize(creds)
 
 
+headers = ['Name', 'ID', 'Check-in time', 'Equipment', 'Check-out Time']
+
 def update_sheet(file):
     """
     Updates a specific sheet in the google sheet in accordance with the csv file."""
@@ -51,6 +53,7 @@ def update_sheets():
     update_sheet(LOG_FILE)
     update_sheet(ROOM_FILE)
     update_sheet(ITEMS_FILE)
+    update_weekly_log_sheet()
 
 def retrieve_sheet(sheet_name):
     """Synchronizes the local csv file with the respective google sheet."""
@@ -72,6 +75,7 @@ def retrieve_sheet(sheet_name):
         fileName = ROOM_FILE
     elif sheet_name == "Item Settings":
         fileName = ITEMS_FILE
+
 
     with open(fileName, 'w', newline='', encoding='utf-8') as csvfile:
         csvwriter = csv.writer(csvfile)
@@ -98,7 +102,6 @@ def is_connected(hostname="8.8.8.8", port=53, timeout=3):
         return True
     except socket.error as ex:
         return False
-
 
 def sheet_exists(service, sheet_title,      spreadsheet_id="1GoRyPMKROvDTHMwj3MQRT7pRbovElxDQUoMRK7_0jUM"):
     """Checks if a sheet exists in the google sheet.
@@ -146,3 +149,26 @@ def create_new_sheet(sheet_name):
     # Return the created sheet's ID
     return response.get('spreadsheetId')
 
+def update_weekly_log_sheet():
+    global gc
+
+    # Get the formatted date for the current week's Monday
+    sheet_name = formatted_monday_date()
+    spreadsheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1GoRyPMKROvDTHMwj3MQRT7pRbovElxDQUoMRK7_0jUM/edit?usp=sharing")
+
+    # Check if the sheet for the current week already exists
+    try:
+        worksheet = spreadsheet.worksheet(sheet_name)
+    except gspread.exceptions.WorksheetNotFound:
+        # Create a new worksheet if it doesn't exist
+        spreadsheet.add_worksheet(title=sheet_name, rows="100", cols="20")
+        worksheet = spreadsheet.worksheet(sheet_name)
+
+    # Get entries from the current week
+    current_week_entries = get_entries_from_current_week(LOG_FILE)
+
+    # Clear the worksheet and update it with the current week's entries
+    worksheet.clear()
+    worksheet.update('A1', [headers] + current_week_entries)  # Assuming 'headers' is defined and contains the header row
+
+update_weekly_log_sheet()
