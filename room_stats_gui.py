@@ -26,6 +26,7 @@ class RoomStatsWindow(QMainWindow):
 
 
     def dataEntryGUI(self):
+        """Creates the GUI for the room settings window"""
         self.pc_count = QLabel("{} PCs are available".format( get_max_pc_count() - get_PC_in_use()))
         self.pc_taken = QLabel("{} PCs are in use".format(get_PC_in_use()))
         self.pc_taken.setStyleSheet('color: #747982;')
@@ -93,6 +94,7 @@ class RoomStatsWindow(QMainWindow):
 
 
     def update_room_stats(self):
+        """Updates the room stats display"""
         print("Updated display")
         self.pc_count.setText("{} PCs are available".format( get_max_pc_count() - get_PC_in_use()))
         self.pc_taken.setText("{} PCs are in use".format(get_PC_in_use()))
@@ -108,12 +110,14 @@ class RoomStatsWindow(QMainWindow):
         self.mousepad_taken.setText("{} Mousepads are in use".format(get_mousepad_in_use()))
     
     def room_stats_timer(self):
+        """Updates the room stats display every 1 second"""
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_room_stats)
         self.timer.start(600)
         
 
     def reset_stats_display(self):
+        """Resets the room stats display and resets all counts to their inventory counts"""
         reset_count()
         self.update_room_stats()
         

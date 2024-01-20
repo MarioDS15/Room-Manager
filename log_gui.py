@@ -38,7 +38,9 @@ class LogsWindow(QMainWindow):
 
 
     def search_logs(self, text):
-        # Clear the QListWidget before displaying new results
+        """Searches the CSV file for the given text
+        Args:
+            text (str): The text to search for"""
         self.logs.clear()
 
         # Open the CSV file and search
@@ -53,6 +55,7 @@ class LogsWindow(QMainWindow):
                     self.logs.addItem(item_text)
 
     def show_context_menu(self, position):
+        """Shows the context menu for the QListWidget"""
         context_menu = QMenu(self.logs)
         check_items_action = QAction("Check items", self.logs)
         context_menu.addAction(check_items_action)
@@ -60,6 +63,7 @@ class LogsWindow(QMainWindow):
         context_menu.exec_(self.logs.mapToGlobal(position))
 
     def check_items(self, id):
+        """Checks the items a student has checked out"""
         selected_item = self.logs.currentItem()
         if selected_item:
             display_text = selected_item.text()

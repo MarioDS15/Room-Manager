@@ -6,12 +6,19 @@ from PyQt5.QtWidgets import QApplication
 from gui import Application
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+from csv_handling import *
+from room_variables import *
 import os
 
 #border: 1px solid red;
 
 
+def on_startup():
+    #retrieve_all()
+    load_items()
+    load_items_in_use()
 
+    pass
 
 if __name__ == "__main__":
 
@@ -26,7 +33,7 @@ if __name__ == "__main__":
     app.setStyle('Fusion')
     app.setStyleSheet(stylesheet)
 
-
+    on_startup()
     main_window = Application()
     
     # Show the main window
@@ -34,6 +41,8 @@ if __name__ == "__main__":
     
     # Start the event loop
     sys.exit(app.exec_())
+    #on_startup()
+
 
 """
 Done:

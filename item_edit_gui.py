@@ -31,6 +31,8 @@ class EditItemsWindow(QMainWindow):
         self.dataEntryGUI()
 
     def dataEntryGUI(self):
+        """
+        Creates the GUI for the room settings window"""
         label = QLabel(f"{self.name} [{self.id}] has the following items checked out:")
         self.main_layout.addWidget(label, 1, 0, Qt.AlignCenter)
 
@@ -59,6 +61,8 @@ class EditItemsWindow(QMainWindow):
         self.main_layout.addWidget(self.submit_button, 7, 0, Qt.AlignCenter)
 
     def submit(self):
+        """Updates the items datasheet in accordance if its been checked out/returned
+        """
         self.dict['Keyboard'] = self.keyboard.isChecked()
         self.dict['Mouse'] = self.mouse.isChecked()
         self.dict['Mousepad'] = self.mousepad.isChecked()

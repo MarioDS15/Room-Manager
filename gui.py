@@ -11,8 +11,8 @@ from log_gui import *
 from item_edit_gui import *
 import csv
 import sys
-from csv_handling import *
-from csv_handling import *
+#from csv_handling import *
+#from csv_handling import *
 import threading
 
 class Application(QMainWindow):
@@ -37,7 +37,7 @@ class Application(QMainWindow):
         self.title_label.setStyleSheet("color: white; font-size: 30px; font-weight: bold;")
         self.data_layout.addWidget(self.title_label, 0, 0, 1, 2)
         self.toolbar()
-        self.retrieve_all()
+        #self.retrieve_all()
         self.dataEntryGUI()
         self.itemEntryGUI()
         self.checkedInGUI()
@@ -47,7 +47,7 @@ class Application(QMainWindow):
         self.populate()
         self.populateTimeout()
         self.timer()
-        self.otherTimer()
+        #self.otherTimer()
         self.secondary_window = None
     
     def timer(self):
@@ -62,6 +62,7 @@ class Application(QMainWindow):
 
 
     def open_room_settings(self):
+        """Opens the room settings window"""
         if self.secondary_window is None:  # Check if the window does not exist
             self.secondary_window = RoomSettingWindow()  # Create the window
             self.secondary_window.show()
@@ -117,6 +118,7 @@ class Application(QMainWindow):
         self.secondary_window = None
 
     def toolbar(self):
+        """Creates the toolbar for the main window"""
         self.toolbar = QToolBar("Toolbar")
         toolbar = self.addToolBar("Toolbar")
         toolbar.setMovable(False)
@@ -178,6 +180,7 @@ class Application(QMainWindow):
         self.item_layout.addWidget(self.mousepad_cb, 7, 0)
 
     def checkedInGUI(self):
+        """Creates the GUI for the checked in students"""
         # Checked in students 
         self.checkedInWidget = QWidget()
         self.checkedInlayout = QGridLayout(self.checkedInWidget)
@@ -209,6 +212,7 @@ class Application(QMainWindow):
         self.checkedInList.itemSelectionChanged.connect(lambda: self.clear_selection(self.checkedInList))
 
     def timeoutGUI(self):
+        """Creates the GUI for the timed out students"""
         self.timeoutWidget = QWidget()
         self.timeoutlayout = QGridLayout(self.timeoutWidget)
         self.main_layout.addWidget(self.timeoutWidget, 1, 1)
@@ -233,11 +237,13 @@ class Application(QMainWindow):
         self.timeoutList.itemSelectionChanged.connect(lambda: self.clear_selection(self.timeoutList))
 
     def checkout_buttons_gui(self):
+        """Creates the GUI for the checkout buttons"""
         self.checkout_button = QPushButton("Checkout student")
         self.data_layout.addWidget(self.log_button, 3, 0, 2, 2)  # Spanning 2 columns
         self.log_button.clicked.connect(self.log)
 
     def log(self): #Reject based on verification
+        """Logs the student into the system if the information is valid, the student is not already logged in, and the student has not exceeded the amount of sessions allowed per day"""
         if verify_id(self.id_entry.text()) == False:
             self.throwPrompt("Entry Error", "Invalid ID number entered")
             return
@@ -272,7 +278,7 @@ class Application(QMainWindow):
         #self.remove_selected_item(self.checkedInList)
         self.clear()
         self.clear()
-        upload_csv_to_sheet(CURRENT_STUDENTS_FILE, "Sheet1")
+        #upload_csv_to_sheet(CURRENT_STUDENTS_FILE, "Sheet1")
         self.upload_logs()
  
     def undo_checkout(self):
@@ -291,6 +297,7 @@ class Application(QMainWindow):
             #self.checkedInList.setCurrentItem(currentSelected)
 
     def checkOut(self, list_widget = None, selected_student = None):
+        """Checks out the currently selected student"""
         if selected_student is None:
             selected_student = list_widget.currentItem()
         if selected_student is None:
@@ -314,10 +321,14 @@ class Application(QMainWindow):
         self.upload_logs()
 
     def upload_logs(self):
+        """Starts a thread to upload the logs to the google sheet"""
+        return
         thread = threading.Thread(target=update_sheets)
         thread.start()
 
     def retrieve_all(self):
+        """Starts a thread to retrieve all the data from the google sheet"""
+        return
         thread = threading.Thread(target=retrieve_all)
         thread.start()
 
@@ -340,6 +351,7 @@ class Application(QMainWindow):
                 self.open_edit_items(list_widget)
 
     def clear(self):
+        """Clears the data entry fields"""
         self.name_entry.clear()
         self.id_entry.clear()
         self.keyboard_cb.setChecked(False)
@@ -347,9 +359,9 @@ class Application(QMainWindow):
         self.headset_cb.setChecked(False)
         self.controller_cb.setChecked(False)
         self.mousepad_cb.setChecked(False)
-        self.update_display()
 
     def populate(self): 
+        """Populates the checked in list with the current students"""
         checkedInDict = load_current_sessions(CURRENT_STUDENTS_FILE)
         for id, session_info in checkedInDict.items():
             # Extract individual data from session_info
@@ -361,6 +373,7 @@ class Application(QMainWindow):
             self.checkedInList.addItem(csv_to_list_widget(name, id, check_in_time))  
 
     def populateTimeout(self):
+        """Populates the timeout list with the expired students"""
         checkedInDict = load_expired_sessions(CURRENT_STUDENTS_FILE)
         for id, session_info in checkedInDict.items():
             name = session_info[0]
@@ -369,6 +382,12 @@ class Application(QMainWindow):
             self.timeoutList.addItem(csv_to_list_widget(name, id, check_in_time))
 
     def remove_selected_item(self,list_widget):
+        """Removes the selected item from the list widget
+        
+        Args:
+            list_widget (QListWidget): The list widget to remove the item from
+        """
+
         selected_item = list_widget.currentItem()
 
         if selected_item:  # Check if there is a selected item
@@ -378,6 +397,7 @@ class Application(QMainWindow):
             list_widget.takeItem(row)
 
     def returnItems(self, list_widget = None):
+        """Throws a prompt showing the items the selected student has checked out"""
         selected_student = list_widget.currentItem()
         # Check if there is a selected item
         if selected_student is None:
@@ -401,13 +421,19 @@ class Application(QMainWindow):
         self.throwPrompt("Items Checked Out", message)
 
     def remove_list_widget(self, list_widget):
+        """Removes the selected list widget"""
         list_widget.takeItem(list_widget.row(list_widget))
     
     def remove_all_list_widgets(self, list_widget):
+        """Removes all the list widgets from the list widget
+        
+        Args:
+            list_widget (QListWidget): The list widget to remove the items from"""
         list_widget.clear()
 
     #Runs every time frame to update people that got timed out
     def routine(self):
+        """Runs every minute to update the display and synchs data with the cloud"""
         print("Routine")
         self.retrieve_all()
         self.remove_all_list_widgets(self.checkedInList)
@@ -416,12 +442,19 @@ class Application(QMainWindow):
         self.populateTimeout()
 
     def routine_second(self):
+        """Runs every second to check if the user is connected to the internet"""
+        return
         if not is_connected():
             QMessageBox.information(self, "Connection Error", "No internet connection detected, please reconnect to the internet and restart the program.")
             self.close()
             return
 
     def checkout_all(self, list_widget):
+        """Checks out all the students in the specified list widget
+
+        Args:
+            list_widget (QListWidget): The list widget to check out all the students from
+        """
         for i in range(list_widget.count()):
             print(i)
             self.checkOut(list_widget, list_widget.item(i))
@@ -430,6 +463,11 @@ class Application(QMainWindow):
             reset_count()
             self.checkout_all(self.timeoutList)
 
-
     def throwPrompt(self, title, message):
+        """Throws a prompt with the specified title and message
+
+        Args:
+            title (str): The title of the prompt
+            message (str): The message of the prompt
+        """
         QMessageBox.information(self, title, message)

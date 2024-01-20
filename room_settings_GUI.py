@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QCheckBox, QListWidget, QListWidgetItem, QMessageBox, QToolBar
 from PyQt5.QtCore import Qt
 from room_variables import *
-from csv_handling import *
+#from csv_handling import *
 
 class RoomSettingWindow(QMainWindow):
     def __init__(self):
@@ -24,6 +24,8 @@ class RoomSettingWindow(QMainWindow):
 
 
     def dataEntryGUI(self):
+        """
+        Creates the GUI for the room settings window"""
         total_hours = session_time_limit.days * 24 + session_time_limit.seconds // 3600
         self.Time_limit = QLabel("Enter room time limit")
         self.Time_limit_entry = QLineEdit()
@@ -88,7 +90,8 @@ class RoomSettingWindow(QMainWindow):
         pass
 
     def save(self):
-
+        """
+        Saves the settings to the room settings file"""
         #Time
         if self.Time_limit_entry.text():
             time_limit = self.Time_limit_entry.text()
@@ -170,7 +173,7 @@ class RoomSettingWindow(QMainWindow):
                 self.Mousepad_count_entry.setText("")
 
             
-        upload_logs(ROOM_FILE)
+        #upload_logs(ROOM_FILE)
         pass
 
     def throw_error(self, message):

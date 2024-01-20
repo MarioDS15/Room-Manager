@@ -2,7 +2,6 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QHB
 import csv
 from datetime import datetime, timedelta
 from room_variables import * 
-from user_settings import *
 from data_loader import *
 from StudentWidget import *
 import csv
@@ -25,9 +24,10 @@ def log_entry(name, id, itemDict):
     if id_exists_in_file(id, CURRENT_STUDENTS_FILE):
         raise ValueError(f"ID {id} already exists in current_entries.csv")
         
-
     # If the ID is unique, write to both files
     for file_path in [LOG_FILE, CURRENT_STUDENTS_FILE]:
+        print("Writing to: " + file_path)
+        
         with open(file_path, mode='a', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             writer.writerow([name, id, timestamp, itemDict])
@@ -45,17 +45,20 @@ def check_if_remaining_session(id):
         return True
     return False
 
-
 def log_checkout(id):
     updated_entries = []
     current_time = datetime.now()
     print("Editing file")
     with open(LOG_FILE, newline='', encoding='utf-8') as file:
         csvreader = csv.reader(file)
+        rowNumber = 0
         for row in csvreader:
+            print(rowNumber, get_row_number(id),row,)
+            
             # Assuming the ID is in the 2nd column (index 1)
-            if row and row[1] == id:
-                row.append(current_time.strftime('%Y-%m-%d %H:%M:%S'))  # Add current time to the row
+            if rowNumber == get_row_number(id):
+                row.append(current_time.strftime('%Y-%m-%d %H:%M:%S'))  
+            rowNumber += 1
             updated_entries.append(row)
 
     # Write the updated data back to the CSV file
@@ -85,6 +88,13 @@ def load_current_sessions(csv_file_path):
     return current_sessions
 
 def load_expired_sessions(csv_file_path):
+    """Loads all expired sessions from the CSV file.
+    
+    Args:
+        csv_file_path (str): The path to the CSV file
+        
+    Returns:    
+        dict: A dictionary containing all expired sessions"""
     expired_sessions = {}
     now = datetime.now()
     #session_time_limit = timedelta(hours=2)  # Define the session time limit
@@ -106,9 +116,19 @@ def load_expired_sessions(csv_file_path):
     return expired_sessions
 
 def csv_to_list_widget(name, id, check_in_time_str):
+    """Converts a CSV row to a QListWidgetItem.
+    
+    Args:
+        name (str): The name of the student
+        id (str): The ID of the student
+        check_in_time_str (str): The time the student checked in
+
+    Returns:
+        QListWidgetItem: The converted QListWidgetItem
+    """
     # Format the display text for the QListWidgetItem
     check_in_time_str = check_in_time_str[10:]
-    if get_time_format() == False:
+    if True: #if get_time_format() == False:
         check_in_time_str = convert_to_12hr(check_in_time_str)
     display_text = f"[{check_in_time_str}] {name} (ID: {id})"
     #display_text = f"{name} (ID: {id})"
@@ -135,6 +155,13 @@ def convert_to_12hr(time_string):
     return time_string
 
 def check_if_session_active(id, current_sessions = CSV_FILE_PATH):
+    """Checks if the session is still active.
+    
+    Args:
+        id (str): The ID of the student to be checked
+        
+    Returns:
+        bool: Whether the session is active or not"""
     now = datetime.now()
     if id in current_sessions:
         session_end_time = current_sessions[id] + session_time_limit
@@ -143,25 +170,26 @@ def check_if_session_active(id, current_sessions = CSV_FILE_PATH):
 
 current_sessions = load_current_sessions(CSV_FILE_PATH)
 
-def check_if_logged_in(id):
+def check_if_logged_in(id): 
+    """Checks if the student is already logged in.
+    
+    Args:
+        id (str): The ID of the student to be checked
+        
+    Returns:
+        bool: Whether the student is logged in or not
+    """
     if id in current_sessions:
         return True
     else:
         return False
 
-def try_check_in(name, id):
-    if check_if_session_active(id, current_sessions):
-        return False
-    else:
-        # Check in the user and add their entry to the CSV and current sessions
-        check_in_time = datetime.now()
-        current_sessions[id] = check_in_time
-        with open(CSV_FILE_PATH, mode='a', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file)
-            writer.writerow([name, id, check_in_time.strftime('%Y-%m-%d %H:%M:%S')])
-        True
-
 def checkTimeout(student):
+    """Checks if the time limit has been exceeded for a specific student.
+    
+    Args:
+        student (Student): The student to be checked
+    """
     current_time = datetime.now()
     entry_time = datetime.strptime(student.checkintimeHour, '%H:%M')
     if current_time - entry_time > timedelta(hours=2):
@@ -170,6 +198,7 @@ def checkTimeout(student):
         return False
 
 def timeover():
+    """Checks if the time limit has been exceeded for any of the current sessions."""
     updated_entries = []
     current_time = datetime.now()
 
@@ -190,6 +219,13 @@ def timeover():
         csvwriter.writerows(updated_entries)
 
 def verify_id(id):
+    """Checks if the ID is valid (if it contains 8 digits and if only alphabetical character is a G at the start).
+    
+    Args:
+        id (str): The ID to be verified
+        
+    Returns:
+        bool: Whether the ID is valid or not"""
     if len(id) == 9:
         if id[0] == 'g' or id[0] == 'G':
             if id[1:].isdigit():
@@ -200,6 +236,7 @@ def verify_id(id):
     return False
 
 def id_convert(id):
+    """Converts the ID to the correct format."""
     if len(id) == 8:
         return 'G' + id
     if len(id) == 9:
@@ -207,19 +244,24 @@ def id_convert(id):
     return id
 
 def verify_name(name):
+    """Checks if the name is valid."""
     if len(name) > 0 and name.isalpha():
         return True
     return False
 
 def list_widget_to_id(list_widget):
+    """Extracts the ID from a QListWidgetItem."""
     # Extract the ID from the QListWidgetItem
     display_text = list_widget.text()
     id = display_text.split('ID: ')[1].replace(')', '')
     return id
 
-
-
 def remove_entry(id, csv_file_path = CSV_FILE_PATH):
+    """Removes an entry from the CSV file.
+
+    Args:
+        id (str): The ID of the student to be removed
+        csv_file_path (str, optional): The path to the CSV file. Defaults to CSV_FILE_PATH."""
     updated_entries = []
 
     with open(csv_file_path, newline='', encoding='utf-8') as file:
@@ -236,7 +278,11 @@ def remove_entry(id, csv_file_path = CSV_FILE_PATH):
         csvwriter.writerows(updated_entries)
 
 def edit_inventory(itemDict, returning = False):
-    #set_PC_count(get_PC_in_use() - 1)
+    """Edits the inventory based on the itemDict.
+    
+    Args:
+        itemDict (dict): A dictionary containing the items to be checked in/out.
+        returning (bool, optional): Whether the items are being checked in or out. Defaults to False."""
     if returning:
         if itemDict["Keyboard"] and get_keyboard_in_use() < get_max_keyboard_count():
             set_keyboard_in_use(get_keyboard_in_use() - 1)
@@ -262,8 +308,8 @@ def edit_inventory(itemDict, returning = False):
             set_mousepad_in_use(get_mousepad_in_use() + 1)
         set_PC_in_use(get_PC_in_use() + 1)
 
-
 def checkInventory():
+    """Checks if there are any items out of stock."""
     message = ""
     if get_headset_in_use() >= get_max_headset_count():
         message += "Headsets \n "
@@ -302,3 +348,60 @@ def set_prev_info(time, name, id):
 def get_prev_info():
     return f"[{prevCheckInTime}] {prevName} (ID: {prevID})"
 
+def get_monday_date():
+    today = datetime.today()
+    monday = today - timedelta(days=today.weekday())
+    return monday
+
+def get_entries_from_current_week(LOG_FILE):
+    # Get the start date of the current week
+    start_date = get_monday_date()
+
+    # Get the start date of the next week
+    next_week_start_date = start_date + timedelta(days=7)
+
+    # Read the logs file
+    entries_from_current_week = []
+    try:
+        with open(LOG_FILE, 'r') as file:
+            reader = csv.reader(file)
+            headers = next(reader)  # Read the header row
+            if not headers:
+                print("The log file is empty.")
+                return entries_from_current_week
+            
+            for entry in reader:
+                if entry:  # Check if the row is not empty
+                    try:
+                        date_str = entry[2].strip()
+                        entry_date = datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+                        if start_date <= entry_date < next_week_start_date:
+                            entries_from_current_week.append(entry)
+                    except ValueError:
+                        # Handle or log the error if the date format is incorrect
+                        print(f"Invalid date format in entry: {entry[2][:10]}")
+
+    except StopIteration:
+        # Handle the case where the log file has only headers or is empty
+        print("No entries in the log file.")
+
+    write_entries_to_csv(entries_from_current_week)
+
+def write_entries_to_csv(entries, csv_file_path= CURRENT_WEEK):
+    with open(csv_file_path, 'r', newline='', encoding='utf-8') as csvfile:
+        reader = csv.reader(csvfile)
+        headers = next(reader, None)  # Read the first line for headers
+
+    # Open the file in write mode and write headers and new entries
+    with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
+        csvwriter = csv.writer(csvfile)
+
+        # Write the headers back
+        if headers:
+            csvwriter.writerow(headers)
+
+        # Write the new entries
+        for entry in entries:
+            csvwriter.writerow(entry)
+            
+get_entries_from_current_week(LOG_FILE)
