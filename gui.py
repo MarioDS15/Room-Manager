@@ -22,7 +22,7 @@ class Application(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Room Entry Logger")
+        self.setWindowTitle("Office Hours Check-in")
         self.setMinimumSize(900, 500)
         #self.setFixedSize(900, 500)
         central_widget = QWidget(self)
@@ -33,7 +33,7 @@ class Application(QMainWindow):
         self.data_layout = QGridLayout(self.dataWidget)
         self.main_layout.addWidget(self.dataWidget, 0, 0)
 
-        self.title_label = QLabel("Room Entry Logger")
+        self.title_label = QLabel("Office Hours Check-in")
         self.title_label.setStyleSheet("color: white; font-size: 30px; font-weight: bold;")
         self.data_layout.addWidget(self.title_label, 0, 0, 1, 2)
         self.toolbar()
@@ -296,7 +296,7 @@ class Application(QMainWindow):
             self.timeoutList.clearSelection()
             #self.checkedInList.setCurrentItem(currentSelected)
 
-    def checkOut(self, list_widget = None, selected_student = None):
+    def checkOut(self, list_widget = None, selected_student = None, all = False):
         """Checks out the currently selected student"""
         if selected_student is None:
             selected_student = list_widget.currentItem()
@@ -315,20 +315,17 @@ class Application(QMainWindow):
         edit_inventory(dict, True) # Edit the inventory to reflect the checkout
         log_checkout(id) # Log the checkout in the log file
         remove_entry(id) # Remove the entry from the current entries file
-        
         self.remove_selected_item(list_widget) # Remove the entry from the display
+        if not all:
+            self.upload_logs()
         
-        self.upload_logs()
-
     def upload_logs(self):
         """Starts a thread to upload the logs to the google sheet"""
-        return
         thread = threading.Thread(target=update_sheets)
         thread.start()
 
     def retrieve_all(self):
         """Starts a thread to retrieve all the data from the google sheet"""
-        return
         thread = threading.Thread(target=retrieve_all)
         thread.start()
 
@@ -443,7 +440,6 @@ class Application(QMainWindow):
 
     def routine_second(self):
         """Runs every second to check if the user is connected to the internet"""
-        return
         if not is_connected():
             QMessageBox.information(self, "Connection Error", "No internet connection detected, please reconnect to the internet and restart the program.")
             self.close()
@@ -457,11 +453,12 @@ class Application(QMainWindow):
         """
         for i in range(list_widget.count()):
             print(i)
-            self.checkOut(list_widget, list_widget.item(i))
+            self.checkOut(list_widget, list_widget.item(i), True)
         self.remove_all_list_widgets(list_widget)
         if(list_widget == self.checkedInList): # If checking out current students, expired students need to be updated
             reset_count()
             self.checkout_all(self.timeoutList)
+        self.upload_logs()
 
     def throwPrompt(self, title, message):
         """Throws a prompt with the specified title and message

@@ -1,15 +1,34 @@
 import csv
 import ast
+import os
+import sys
 from datetime import date, datetime
-
+"""
 USER_SETTINGS = "csvFiles/user_settings.csv"
 ROOM_FILE = "csvFiles/room_variables.csv"
 CURRENT_STUDENTS_FILE = 'csvFiles/current_entries.csv'
 LOG_FILE = 'csvFiles/log_entries.csv'
 ITEMS_FILE = 'csvFiles/inventory_in_use.csv'
 CURRENT_WEEK = 'csvFiles/current_week.csv'
+"""
 
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+USER_SETTINGS = resource_path("csvFiles/user_settings.csv")
+ROOM_FILE = resource_path("csvFiles/room_variables.csv")
+CURRENT_STUDENTS_FILE = resource_path('csvFiles/current_entries.csv')
+LOG_FILE = resource_path('csvFiles/log_entries.csv')
+ITEMS_FILE = resource_path('csvFiles/inventory_in_use.csv')
+CURRENT_WEEK = resource_path('csvFiles/current_week.csv')
 
 def csv_to_dict(csv_file_path):
     settings = {}

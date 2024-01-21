@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QCheckBox, QListWidget, QListWidgetItem, QMessageBox, QToolBar
 from PyQt5.QtCore import Qt, QTimer
 from room_variables import *
+from csv_handling import *
 
 class RoomStatsWindow(QMainWindow):
     def __init__(self):
@@ -108,6 +109,7 @@ class RoomStatsWindow(QMainWindow):
         self.controller_taken.setText("{} Controllers are in use".format(get_controller_in_use()))
         self.mousepad_count.setText("{} Mousepads are available".format( get_max_mousepad_count() - get_mousepad_in_use()))
         self.mousepad_taken.setText("{} Mousepads are in use".format(get_mousepad_in_use()))
+        
     
     def room_stats_timer(self):
         """Updates the room stats display every 1 second"""
@@ -119,7 +121,9 @@ class RoomStatsWindow(QMainWindow):
     def reset_stats_display(self):
         """Resets the room stats display and resets all counts to their inventory counts"""
         reset_count()
+        update_sheet(ROOM_FILE)
         self.update_room_stats()
+
         
     def throw_error(self, message):
         error = QMessageBox()

@@ -8,7 +8,6 @@ import csv
 CSV_FILE_PATH = CURRENT_STUDENTS_FILE
 
 
-
 def id_exists_in_file(id, file_path = CURRENT_STUDENTS_FILE):
     with open(file_path, 'r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)

@@ -18,7 +18,9 @@
   <a target="code" href="///C:/Users/husky/OneDrive/GMU%20esports/Room%20Manager/main.py" type="text/plain"><tt>main.py</tt></a>
 <span class="moduletype">Script</span>  <div class="import">
 imports:
-    <a href="#PyQt5.QtWidgets">PyQt5.QtWidgets</a>
+    <a href="#PyQt5.QtCore">PyQt5.QtCore</a>
+ &#8226;   <a href="#PyQt5.QtGui">PyQt5.QtGui</a>
+ &#8226;   <a href="#PyQt5.QtWidgets">PyQt5.QtWidgets</a>
  &#8226;   <a href="#_collections_abc">_collections_abc</a>
  &#8226;   <a href="#_weakrefset">_weakrefset</a>
  &#8226;   <a href="#abc">abc</a>
@@ -26,7 +28,9 @@ imports:
  &#8226;   <a href="#collections">collections</a>
  &#8226;   <a href="#collections.abc">collections.abc</a>
  &#8226;   <a href="#copyreg">copyreg</a>
+ &#8226;   <a href="#csv_handling">csv_handling</a>
  &#8226;   <a href="#data_handling">data_handling</a>
+ &#8226;   <a href="#data_loader">data_loader</a>
  &#8226;   <a href="#encodings">encodings</a>
  &#8226;   <a href="#encodings.aliases">encodings.aliases</a>
  &#8226;   <a href="#encodings.ascii">encodings.ascii</a>
@@ -174,6 +178,7 @@ imports:
  &#8226;   <a href="#re._constants">re._constants</a>
  &#8226;   <a href="#re._parser">re._parser</a>
  &#8226;   <a href="#reprlib">reprlib</a>
+ &#8226;   <a href="#room_variables">room_variables</a>
  &#8226;   <a href="#sre_compile">sre_compile</a>
  &#8226;   <a href="#sre_constants">sre_constants</a>
  &#8226;   <a href="#sre_parse">sre_parse</a>
@@ -549,6 +554,7 @@ imported by:
  &#8226;   <a href="#gui">gui</a>
  &#8226;   <a href="#item_edit_gui">item_edit_gui</a>
  &#8226;   <a href="#log_gui">log_gui</a>
+ &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#room_settings_GUI">room_settings_GUI</a>
  &#8226;   <a href="#room_stats_gui">room_stats_gui</a>
 
@@ -568,6 +574,7 @@ imports:
 imported by:
     <a href="#PyQt5.QtWidgets">PyQt5.QtWidgets</a>
  &#8226;   <a href="#gui">gui</a>
+ &#8226;   <a href="#main.py">main.py</a>
 
   </div>
 
@@ -3955,16 +3962,23 @@ imported by:
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#csv">csv</a>
+ &#8226;   <a href="#data_handling">data_handling</a>
  &#8226;   <a href="#data_loader">data_loader</a>
+ &#8226;   <a href="#datetime">datetime</a>
+ &#8226;   <a href="#googleapiclient.discovery">googleapiclient.discovery</a>
  &#8226;   <a href="#gspread">gspread</a>
  &#8226;   <a href="#oauth2client.service_account">oauth2client.service_account</a>
+ &#8226;   <a href="#os">os</a>
  &#8226;   <a href="#socket">socket</a>
+ &#8226;   <a href="#threading">threading</a>
 
   </div>
   <div class="import">
 imported by:
-    <a href="#gui">gui</a>
+    <a href="#item_edit_gui">item_edit_gui</a>
+ &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#room_settings_GUI">room_settings_GUI</a>
+ &#8226;   <a href="#room_stats_gui">room_stats_gui</a>
 
   </div>
 
@@ -4022,12 +4036,12 @@ imports:
  &#8226;   <a href="#data_loader">data_loader</a>
  &#8226;   <a href="#datetime">datetime</a>
  &#8226;   <a href="#room_variables">room_variables</a>
- &#8226;   <a href="#user_settings">user_settings</a>
 
   </div>
   <div class="import">
 imported by:
-    <a href="#gui">gui</a>
+    <a href="#csv_handling">csv_handling</a>
+ &#8226;   <a href="#gui">gui</a>
  &#8226;   <a href="#item_edit_gui">item_edit_gui</a>
  &#8226;   <a href="#main.py">main.py</a>
 
@@ -4043,6 +4057,8 @@ imports:
     <a href="#ast">ast</a>
  &#8226;   <a href="#csv">csv</a>
  &#8226;   <a href="#datetime">datetime</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#sys">sys</a>
 
   </div>
   <div class="import">
@@ -4051,8 +4067,8 @@ imported by:
  &#8226;   <a href="#data_handling">data_handling</a>
  &#8226;   <a href="#gui">gui</a>
  &#8226;   <a href="#item_edit_gui">item_edit_gui</a>
+ &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#room_variables">room_variables</a>
- &#8226;   <a href="#user_settings">user_settings</a>
 
   </div>
 
@@ -4097,6 +4113,7 @@ imports:
 imported by:
     <a href="#_strptime">_strptime</a>
  &#8226;   <a href="#calendar">calendar</a>
+ &#8226;   <a href="#csv_handling">csv_handling</a>
  &#8226;   <a href="#data_handling">data_handling</a>
  &#8226;   <a href="#data_loader">data_loader</a>
  &#8226;   <a href="#email.utils">email.utils</a>
@@ -9317,7 +9334,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#main.py">main.py</a>
+    <a href="#csv_handling">csv_handling</a>
+ &#8226;   <a href="#main.py">main.py</a>
 
   </div>
 
@@ -9795,7 +9813,6 @@ imports:
  &#8226;   <a href="#PyQt5.QtWidgets">PyQt5.QtWidgets</a>
  &#8226;   <a href="#StudentWidget">StudentWidget</a>
  &#8226;   <a href="#csv">csv</a>
- &#8226;   <a href="#csv_handling">csv_handling</a>
  &#8226;   <a href="#data_handling">data_handling</a>
  &#8226;   <a href="#data_loader">data_loader</a>
  &#8226;   <a href="#datetime">datetime</a>
@@ -10427,6 +10444,7 @@ imports:
  &#8226;   <a href="#importlib">importlib</a>
  &#8226;   <a href="#importlib._bootstrap">importlib._bootstrap</a>
  &#8226;   <a href="#importlib._bootstrap_external">importlib._bootstrap_external</a>
+ &#8226;   <a href="#importlib.machinery">importlib.machinery</a>
  &#8226;   <a href="#sys">sys</a>
  &#8226;   <a href="#warnings">warnings</a>
 
@@ -10562,7 +10580,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#importlib.abc">importlib.abc</a>
+    <a href="#importlib">importlib</a>
+ &#8226;   <a href="#importlib.abc">importlib.abc</a>
  &#8226;   <a href="#inspect">inspect</a>
  &#8226;   <a href="#pkgutil">pkgutil</a>
  &#8226;   <a href="#py_compile">py_compile</a>
@@ -11117,6 +11136,7 @@ imported by:
 imports:
     <a href="#PyQt5.QtCore">PyQt5.QtCore</a>
  &#8226;   <a href="#PyQt5.QtWidgets">PyQt5.QtWidgets</a>
+ &#8226;   <a href="#csv_handling">csv_handling</a>
  &#8226;   <a href="#data_handling">data_handling</a>
  &#8226;   <a href="#data_loader">data_loader</a>
  &#8226;   <a href="#room_variables">room_variables</a>
@@ -14362,7 +14382,9 @@ imported by:
  &#8226;   <a href="#concurrent.futures.process">concurrent.futures.process</a>
  &#8226;   <a href="#concurrent.futures.thread">concurrent.futures.thread</a>
  &#8226;   <a href="#contextlib">contextlib</a>
+ &#8226;   <a href="#csv_handling">csv_handling</a>
  &#8226;   <a href="#ctypes">ctypes</a>
+ &#8226;   <a href="#data_loader">data_loader</a>
  &#8226;   <a href="#doctest">doctest</a>
  &#8226;   <a href="#email.utils">email.utils</a>
  &#8226;   <a href="#fnmatch">fnmatch</a>
@@ -17013,6 +17035,7 @@ imported by:
 imports:
     <a href="#PyQt5.QtCore">PyQt5.QtCore</a>
  &#8226;   <a href="#PyQt5.QtWidgets">PyQt5.QtWidgets</a>
+ &#8226;   <a href="#csv_handling">csv_handling</a>
  &#8226;   <a href="#room_variables">room_variables</a>
 
   </div>
@@ -17039,6 +17062,7 @@ imported by:
     <a href="#data_handling">data_handling</a>
  &#8226;   <a href="#item_edit_gui">item_edit_gui</a>
  &#8226;   <a href="#log_gui">log_gui</a>
+ &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#room_settings_GUI">room_settings_GUI</a>
  &#8226;   <a href="#room_stats_gui">room_stats_gui</a>
 
@@ -17966,6 +17990,7 @@ imported by:
  &#8226;   <a href="#contextlib">contextlib</a>
  &#8226;   <a href="#ctypes">ctypes</a>
  &#8226;   <a href="#ctypes._endian">ctypes._endian</a>
+ &#8226;   <a href="#data_loader">data_loader</a>
  &#8226;   <a href="#dataclasses">dataclasses</a>
  &#8226;   <a href="#dis">dis</a>
  &#8226;   <a href="#doctest">doctest</a>
@@ -18269,6 +18294,7 @@ imported by:
  &#8226;   <a href="#concurrent.futures._base">concurrent.futures._base</a>
  &#8226;   <a href="#concurrent.futures.process">concurrent.futures.process</a>
  &#8226;   <a href="#concurrent.futures.thread">concurrent.futures.thread</a>
+ &#8226;   <a href="#csv_handling">csv_handling</a>
  &#8226;   <a href="#google.auth._refresh_worker">google.auth._refresh_worker</a>
  &#8226;   <a href="#gui">gui</a>
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
@@ -20075,22 +20101,6 @@ imported by:
 <span class="moduletype">MissingModule</span>  <div class="import">
 imported by:
     <a href="#requests_oauthlib.oauth1_session">requests_oauthlib.oauth1_session</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="user_settings"></a>
-  <a target="code" href="///C:/Users/husky/OneDrive/GMU%20esports/Room%20Manager/user_settings.py" type="text/plain"><tt>user_settings</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#data_loader">data_loader</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#data_handling">data_handling</a>
 
   </div>
 

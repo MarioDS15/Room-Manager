@@ -7,6 +7,7 @@ from data_loader import *
 import socket
 from datetime import datetime, timedelta
 from data_handling import *
+import threading
 
 scope = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive']
 
@@ -15,7 +16,7 @@ creds = ServiceAccountCredentials.from_json_keyfile_name('client.json', scopes=s
 # Authorize the credentials with gspread
 gc = gspread.authorize(creds)
 
-
+sheet_lock = threading.Lock()
 headers = ['Name', 'ID', 'Check-in time', 'Equipment', 'Check-out Time']
 
 def update_sheet(file):
@@ -24,25 +25,29 @@ def update_sheet(file):
     global scope
     global gc
     global sheet
-    # Load credentials from the downloaded JSON key file
-    sheetName = ""
-    if file == LOG_FILE:
-        sheetName = "Logs"
-    elif file == CURRENT_STUDENTS_FILE:
-        sheetName = "Current Entries"
-    elif file == ROOM_FILE:
-        sheetName = "Room Settings"
-    elif file == ITEMS_FILE:
-        sheetName = "Item Settings"
-    # Open the Google Sheet
-    sheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1GoRyPMKROvDTHMwj3MQRT7pRbovElxDQUoMRK7_0jUM/edit?usp=sharing")    
-    worksheet = sheet.worksheet(sheetName)
-    worksheet.clear()
-    # Read the CSV file data
+    global sheet_lock
+    sheet_lock.acquire()
+    try:
+        sheetName = ""
+        if file == LOG_FILE:
+            sheetName = "Logs"
+        elif file == CURRENT_STUDENTS_FILE:
+            sheetName = "Current Entries"
+        elif file == ROOM_FILE:
+            sheetName = "Room Settings"
+        elif file == ITEMS_FILE:
+            sheetName = "Item Settings"
+        # Open the Google Sheet
+        sheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1GoRyPMKROvDTHMwj3MQRT7pRbovElxDQUoMRK7_0jUM/edit?usp=sharing")    
+        worksheet = sheet.worksheet(sheetName)
+        worksheet.clear()
+        # Read the CSV file data
 
-    with open(file, newline='') as csvfile:
-        reader = csv.reader(csvfile)
-        data = list(reader)
+        with open(file, newline='') as csvfile:
+            reader = csv.reader(csvfile)
+            data = list(reader)
+    finally:
+        sheet_lock.release()
 
     # Upload CSV data to the first sheet of the Google Sheet
     worksheet.update('A1', data)
@@ -60,26 +65,32 @@ def retrieve_sheet(sheet_name):
     global scope
     global gc
     global sheet
-    print("Retrieving" + sheet_name)
-    sheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1GoRyPMKROvDTHMwj3MQRT7pRbovElxDQUoMRK7_0jUM/edit?usp=sharing").worksheet(sheet_name)
+    global sheet_lock
+    sheet_lock.acquire()
+    try:
+        print("Retrieving: " + sheet_name)
+        sheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1GoRyPMKROvDTHMwj3MQRT7pRbovElxDQUoMRK7_0jUM/edit?usp=sharing").worksheet(sheet_name)
 
 
-    list_of_lists = sheet.get_all_values()
-    fileName = ""
+        list_of_lists = sheet.get_all_values()
+        fileName = ""
 
-    if sheet_name == "Logs":
-        fileName = LOG_FILE
-    elif sheet_name == "Current Entries":
-        fileName = CURRENT_STUDENTS_FILE
-    elif sheet_name == "Room Settings":
-        fileName = ROOM_FILE
-    elif sheet_name == "Item Settings":
-        fileName = ITEMS_FILE
+        if sheet_name == "Logs":
+            fileName = LOG_FILE
+        elif sheet_name == "Current Entries":
+            fileName = CURRENT_STUDENTS_FILE
+            update_weekly_log_sheet()
+        elif sheet_name == "Room Settings":
+            fileName = ROOM_FILE
+        elif sheet_name == "Item Settings":
+            fileName = ITEMS_FILE
 
 
-    with open(fileName, 'w', newline='', encoding='utf-8') as csvfile:
-        csvwriter = csv.writer(csvfile)
-        csvwriter.writerows(list_of_lists)
+        with open(fileName, 'w', newline='', encoding='utf-8') as csvfile:
+            csvwriter = csv.writer(csvfile)
+            csvwriter.writerows(list_of_lists)
+    finally:
+        sheet_lock.release()
 
 def retrieve_all():
     """Synchronizes all local csv files with the respective google sheets."""
@@ -171,4 +182,3 @@ def update_weekly_log_sheet():
     worksheet.clear()
     worksheet.update('A1', [headers] + current_week_entries)  # Assuming 'headers' is defined and contains the header row
 
-update_weekly_log_sheet()

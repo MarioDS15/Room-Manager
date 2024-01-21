@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt, QTimer
 from room_variables import *
 from data_handling import *
 from data_loader import *
+from csv_handling import *
 
 class EditItemsWindow(QMainWindow):
     def __init__(self, name, id, dict):
@@ -95,4 +96,5 @@ class EditItemsWindow(QMainWindow):
             elif self.dict['Controller'] == True and currentInv['Controller'] == False:
                 set_controller_in_use(get_controller_in_use() + 1)
         update_dict(self.id, self.dict)
+        update_sheets()
         self.close()
