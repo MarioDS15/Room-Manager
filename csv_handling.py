@@ -7,11 +7,12 @@ from data_loader import *
 import socket
 from datetime import datetime, timedelta
 from data_handling import *
+from data_loader import *
 import threading
 
 scope = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive']
 
-creds = ServiceAccountCredentials.from_json_keyfile_name('client.json', scopes=scope)
+creds = ServiceAccountCredentials.from_json_keyfile_name(get_json(), scopes=scope)
 
 # Authorize the credentials with gspread
 gc = gspread.authorize(creds)
@@ -29,13 +30,13 @@ def update_sheet(file):
     sheet_lock.acquire()
     try:
         sheetName = ""
-        if file == LOG_FILE:
+        if file == get_log_path():
             sheetName = "Logs"
-        elif file == CURRENT_STUDENTS_FILE:
+        elif file == get_current_students_path():
             sheetName = "Current Entries"
-        elif file == ROOM_FILE:
+        elif file == get_room_path():
             sheetName = "Room Settings"
-        elif file == ITEMS_FILE:
+        elif file == get_items_path():
             sheetName = "Item Settings"
         # Open the Google Sheet
         sheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1GoRyPMKROvDTHMwj3MQRT7pRbovElxDQUoMRK7_0jUM/edit?usp=sharing")    
@@ -54,10 +55,10 @@ def update_sheet(file):
 
 def update_sheets():
     """Updates all sheets in the google sheet in accordance with the csv files."""
-    update_sheet(CURRENT_STUDENTS_FILE)
-    update_sheet(LOG_FILE)
-    update_sheet(ROOM_FILE)
-    update_sheet(ITEMS_FILE)
+    update_sheet(get_current_students_path())
+    update_sheet(get_log_path())
+    update_sheet(get_room_path())
+    update_sheet(get_items_path())
     update_weekly_log_sheet()
 
 def retrieve_sheet(sheet_name):
@@ -76,14 +77,14 @@ def retrieve_sheet(sheet_name):
         fileName = ""
 
         if sheet_name == "Logs":
-            fileName = LOG_FILE
+            fileName = get_log_path()
         elif sheet_name == "Current Entries":
-            fileName = CURRENT_STUDENTS_FILE
+            fileName = get_current_students_path()
             update_weekly_log_sheet()
         elif sheet_name == "Room Settings":
-            fileName = ROOM_FILE
+            fileName = get_room_path()
         elif sheet_name == "Item Settings":
-            fileName = ITEMS_FILE
+            fileName = get_items_path()
 
 
         with open(fileName, 'w', newline='', encoding='utf-8') as csvfile:
@@ -176,7 +177,7 @@ def update_weekly_log_sheet():
         worksheet = spreadsheet.worksheet(sheet_name)
 
     # Get entries from the current week
-    current_week_entries = get_entries_from_current_week(LOG_FILE)
+    current_week_entries = get_entries_from_current_week()
 
     # Clear the worksheet and update it with the current week's entries
     worksheet.clear()

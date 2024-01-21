@@ -69,7 +69,7 @@ class EditItemsWindow(QMainWindow):
         self.dict['Mousepad'] = self.mousepad.isChecked()
         self.dict['Headset'] = self.headset.isChecked()
         self.dict['Controller'] = self.controller.isChecked()
-        currentInv = items_to_dict(CURRENT_STUDENTS_FILE, self.id)
+        currentInv = items_to_dict(get_current_students_path(), self.id)
         if currentInv is not None:
             if self.dict['Keyboard'] == False and currentInv['Keyboard'] == True:
                 set_keyboard_in_use(get_keyboard_in_use() - 1)

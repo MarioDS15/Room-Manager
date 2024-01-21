@@ -103,7 +103,7 @@ class Application(QMainWindow):
             if list_widget.currentItem() is not None :
                 id = list_widget_to_id(list_widget.currentItem())
                 name = get_student_name(id)
-                dict = items_to_dict(CURRENT_STUDENTS_FILE, id)
+                dict = items_to_dict(get_current_students_path(), id)
             else:
                 self.throwPrompt("Edit Error", "No student selected")
                 return
@@ -308,7 +308,7 @@ class Application(QMainWindow):
             return
         name = get_student_name(selected_student)
         id = list_widget_to_id(selected_student)
-        dict = items_to_dict(CURRENT_STUDENTS_FILE, id)
+        dict = items_to_dict(get_current_students_path(), id)
         time = get_student_time(id)
         set_prev_info(time, name, id)
         # Obtain the information from the selected item
@@ -359,7 +359,7 @@ class Application(QMainWindow):
 
     def populate(self): 
         """Populates the checked in list with the current students"""
-        checkedInDict = load_current_sessions(CURRENT_STUDENTS_FILE)
+        checkedInDict = load_current_sessions(get_current_students_path())
         for id, session_info in checkedInDict.items():
             # Extract individual data from session_info
             name = session_info[0]
@@ -371,7 +371,7 @@ class Application(QMainWindow):
 
     def populateTimeout(self):
         """Populates the timeout list with the expired students"""
-        checkedInDict = load_expired_sessions(CURRENT_STUDENTS_FILE)
+        checkedInDict = load_expired_sessions(get_current_students_path())
         for id, session_info in checkedInDict.items():
             name = session_info[0]
             id = session_info[1]
@@ -404,7 +404,7 @@ class Application(QMainWindow):
         # Obtain the information from the selected item
         id = list_widget_to_id(selected_student)
         name = get_student_name(id)
-        items = items_to_dict(CURRENT_STUDENTS_FILE, id)
+        items = items_to_dict(get_current_students_path(), id)
         message = f"{name} has checked out the following: \n"
         anyItems = False
         

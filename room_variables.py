@@ -27,92 +27,92 @@ mousepad_in_use = 0
 def set_time_limit(new_time_limit):
     """Updates the time limit for a session across all students"""
     global session_time_limit
-    update_row(ROOM_FILE, 'Time_limit', new_time_limit)
+    update_row(get_room_path(), 'Time_limit', new_time_limit)
     session_time_limit = timedelta(hours=int(new_time_limit))
 
 def set_max_pc_count(PC_count):
     """Updates the amount of PCs available in the room"""
     global max_pc_count
-    update_row(ROOM_FILE, 'PC_count', PC_count)
+    update_row(get_room_path(), 'PC_count', PC_count)
     max_pc_count = int(PC_count)
 
 def set_headset_count(headset_count):
     """Updates the amount of headsets available in the room"""
     global max_headset_count
-    update_row(ROOM_FILE, 'Headset_count', headset_count)
+    update_row(get_room_path(), 'Headset_count', headset_count)
     max_headset_count = int(headset_count)
 
 def set_mouse_count(mouse_count):  
     """Updates the amount of mouses available in the room"""
     global max_mouse_count
-    update_row(ROOM_FILE, 'Mouse_count', mouse_count)
+    update_row(get_room_path(), 'Mouse_count', mouse_count)
     max_mouse_count = int(mouse_count)
     #print("Updated mouse count " + str(max_mouse_count))
 
 def set_keyboard_count(keyboard_count):
     """Updates the amount of keyboards available in the room"""
     global max_keyboard_count
-    update_row(ROOM_FILE, 'Keyboard_count', keyboard_count)
+    update_row(get_room_path(), 'Keyboard_count', keyboard_count)
     max_keyboard_count = int(keyboard_count)
 
 def set_headset_count(headset_count):
     """Updates the amount of headsets available in the room"""
     global max_headset_count
-    update_row(ROOM_FILE, 'Headset_count', headset_count)
+    update_row(get_room_path(), 'Headset_count', headset_count)
     max_headset_count = int(headset_count)
 
 def set_controller_count(controller_count):
     """Updates the amount of controllers available in the room"""
     global max_controller_count
-    update_row(ROOM_FILE, 'Controller_count', controller_count)
+    update_row(get_room_path(), 'Controller_count', controller_count)
     max_controller_count = int(controller_count)
 
 def set_mousepad_count(mousepad_count):
     """Updates the amount of mousepads available in the room"""
     global max_mousepad_count
-    update_row(ROOM_FILE, 'Mousepad_count', mousepad_count)
+    update_row(get_room_path(), 'Mousepad_count', mousepad_count)
     max_mousepad_count = int(mousepad_count)
 
 def set_PC_in_use(PC_count):
     """Updates the amount of PCs in use in the room"""
     global PC_in_use
     #print("PC count " + str(PC_count))
-    update_row(ITEMS_FILE, 'PC_count', PC_count)
+    update_row(get_room_path(), 'PC_count', PC_count)
     PC_in_use = int(PC_count)
 
 def set_headset_in_use(headset_count):
     """Updates the amount of headsets in use in the room"""
     global headset_in_use
-    update_row(ITEMS_FILE, 'Headset_count', headset_count)
+    update_row(get_room_path(), 'Headset_count', headset_count)
     headset_in_use = headset_count
 
 def set_mouse_in_use(mouse_count):
     """Updates the amount of mice in use in the room"""
     global mouse_in_use
-    update_row(ITEMS_FILE, 'Mouse_count', mouse_count)
+    update_row(get_room_path(), 'Mouse_count', mouse_count)
     mouse_in_use = mouse_count
 
 def set_keyboard_in_use(keyboard_count):
     """Updates the amount of keyboards in use in the room"""
     global keyboard_in_use
-    update_row(ITEMS_FILE, 'Keyboard_count', keyboard_count)
+    update_row(get_room_path(), 'Keyboard_count', keyboard_count)
     keyboard_in_use = keyboard_count
 
 def set_controller_in_use(controller_count):
     """Updates the amount of controllers in use in the room"""
     global controller_in_use
-    update_row(ITEMS_FILE, 'Controller_count', controller_count)
+    update_row(get_room_path(), 'Controller_count', controller_count)
     controller_in_use = controller_count
 
 def set_mousepad_in_use(mousepad_count):
     """Updates the amount of mousepads in use in the room"""
     global mousepad_in_use
-    update_row(ITEMS_FILE, 'Mousepad_count', mousepad_count)
+    update_row(get_room_path(), 'Mousepad_count', mousepad_count)
     mousepad_in_use = mousepad_count
 
 def load_items():
     """Sets the room variables to the values in the room settings csv"""
-    settings = csv_to_dict(ROOM_FILE)
+    settings = csv_to_dict(get_room_path())
     set_time_limit(settings['Time_limit'])
     set_max_pc_count(settings['PC_count'])
     set_headset_count(settings['Headset_count'])
@@ -122,7 +122,7 @@ def load_items():
     set_mousepad_count(settings['Mousepad_count'])
     
 def load_items_in_use():
-    settings = csv_to_dict(ITEMS_FILE)
+    settings = csv_to_dict(get_items_path())
     set_PC_in_use(settings['PC_count'])
     set_headset_in_use(settings['Headset_count'])
     set_mouse_in_use(settings['Mouse_count'])

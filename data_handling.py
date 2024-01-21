@@ -5,10 +5,10 @@ from room_variables import *
 from data_loader import *
 from StudentWidget import *
 import csv
-CSV_FILE_PATH = CURRENT_STUDENTS_FILE
+CSV_FILE_PATH = get_current_students_path()
 
 
-def id_exists_in_file(id, file_path = CURRENT_STUDENTS_FILE):
+def id_exists_in_file(id, file_path = get_current_students_path()):
     with open(file_path, 'r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
         for row in reader:
@@ -20,11 +20,11 @@ def log_entry(name, id, itemDict):
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
     # Check if the ID already exists in current_entries.csv
-    if id_exists_in_file(id, CURRENT_STUDENTS_FILE):
+    if id_exists_in_file(id, get_current_students_path()):
         raise ValueError(f"ID {id} already exists in current_entries.csv")
         
     # If the ID is unique, write to both files
-    for file_path in [LOG_FILE, CURRENT_STUDENTS_FILE]:
+    for file_path in [get_log_path(), get_current_students_path()]:
         print("Writing to: " + file_path)
         
         with open(file_path, mode='a', newline='', encoding='utf-8') as file:
@@ -48,7 +48,7 @@ def log_checkout(id):
     updated_entries = []
     current_time = datetime.now()
     print("Editing file")
-    with open(LOG_FILE, newline='', encoding='utf-8') as file:
+    with open(get_log_path(), newline='', encoding='utf-8') as file:
         csvreader = csv.reader(file)
         rowNumber = 0
         for row in csvreader:
@@ -61,7 +61,7 @@ def log_checkout(id):
             updated_entries.append(row)
 
     # Write the updated data back to the CSV file
-    with open(LOG_FILE, 'w', newline='', encoding='utf-8') as file:
+    with open(get_log_path(), 'w', newline='', encoding='utf-8') as file:
         csvwriter = csv.writer(file)
         csvwriter.writerows(updated_entries)
 
@@ -153,7 +153,7 @@ def convert_to_12hr(time_string):
         time_string += " AM"
     return time_string
 
-def check_if_session_active(id, current_sessions = CSV_FILE_PATH):
+def check_if_session_active(id, current_sessions = get_current_students_path()):
     """Checks if the session is still active.
     
     Args:
@@ -255,7 +255,7 @@ def list_widget_to_id(list_widget):
     id = display_text.split('ID: ')[1].replace(')', '')
     return id
 
-def remove_entry(id, csv_file_path = CSV_FILE_PATH):
+def remove_entry(id, csv_file_path = get_current_students_path()):
     """Removes an entry from the CSV file.
 
     Args:
@@ -352,7 +352,7 @@ def get_monday_date():
     monday = today - timedelta(days=today.weekday())
     return monday
 
-def get_entries_from_current_week(LOG_FILE):
+def get_entries_from_current_week():
     # Get the start date of the current week
     start_date = get_monday_date()
 
@@ -362,7 +362,7 @@ def get_entries_from_current_week(LOG_FILE):
     # Read the logs file
     entries_from_current_week = []
     try:
-        with open(LOG_FILE, 'r') as file:
+        with open(get_log_path(), 'r') as file:
             reader = csv.reader(file)
             headers = next(reader)  # Read the header row
             if not headers:
@@ -387,7 +387,7 @@ def get_entries_from_current_week(LOG_FILE):
     write_entries_to_csv(entries_from_current_week)
     return entries_from_current_week
 
-def write_entries_to_csv(entries, csv_file_path= CURRENT_WEEK):
+def write_entries_to_csv(entries, csv_file_path= get_current_week_path()):
     with open(csv_file_path, 'r', newline='', encoding='utf-8') as csvfile:
         reader = csv.reader(csvfile)
         headers = next(reader, None)  # Read the first line for headers

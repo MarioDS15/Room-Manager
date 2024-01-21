@@ -5,7 +5,7 @@ from data_handling import *
 from data_loader import *
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QMessageBox
 from PyQt5.QtCore import QThread, pyqtSignal, QTimer
-from PyQt5.QtGui import QPixmap, QFont
+from PyQt5.QtGui import QPixmap, QFont, QIcon
 from gui import Application
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
@@ -13,7 +13,7 @@ from csv_handling import *
 from room_variables import *
 from csv_handling import *
 import os
-
+"""py -m PyInstaller --clean --add-data "csvFiles;csvFiles" --add-data "logo.png;." --add-data "client.json;." --noconsole --icon=logo.ico main.py"""
 #border: 1px solid red;
 
 def on_startup(loading_screen):
@@ -42,6 +42,7 @@ class LoadingScreen(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        self.setWindowIcon(QIcon(get_logo()))
         self.setFixedSize(400, 400)
         self.initUI()
         self.startLoadingAnimation()  # Start the loading animation
@@ -51,7 +52,7 @@ class LoadingScreen(QWidget):
 
         # Logo
         logo_label = QLabel(self)
-        pixmap = QPixmap("logo.png")  # Replace with your logo path
+        pixmap = QPixmap(get_logo())  # Replace with your logo path
         logo_label.setPixmap(pixmap.scaled(256, 256, Qt.KeepAspectRatio))  # Scale logo as needed
 
         # Title
@@ -88,6 +89,12 @@ class StartupThread(QThread):
         on_startup(loading_screen)
         self.finished.emit()
 
+def main():
+    print("User settings path:", get_room_path())
+    print("Room file path:", get_room_path())
+    room_settings_path = get_room_path()
+    
+
 if __name__ == "__main__":
     from data_handling import *
     from PyQt5.QtWidgets import QApplication
@@ -95,7 +102,7 @@ if __name__ == "__main__":
     from google_auth_oauthlib.flow import InstalledAppFlow
     from googleapiclient.discovery import build
     import os
-
+    main()
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
     app.setStyleSheet(stylesheet)
@@ -116,6 +123,7 @@ if __name__ == "__main__":
     # Function to show the main window
     def show_main_window():
         main_window.show()
+        main_window.setWindowIcon(QIcon(get_logo()))
         main_window.activateWindow()
         main_window.raise_()
     # Connect the finished signal to both close the loading screen and show the main window
@@ -163,10 +171,15 @@ Synch to cloud
 To-do:
 Import stuff
 Handle race conditions
-
+Add threading to reset count
 Application
     -Add option to only require ID
 Try installing on mac, check for size changes
 Am I even downloading the weekly log?
+Searching logs fucks it up [  File "log_gui.py", line 52, in search_logs
+KeyError: 'ID']
+Add logo for app
+Mousepad not updating
+Fix how room stats looks
 """
 

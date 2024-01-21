@@ -18,17 +18,39 @@ def resource_path(relative_path):
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
         base_path = sys._MEIPASS
-    except Exception:
+    except AttributeError:
+        # sys._MEIPASS is not set, so return the path assuming a development environment
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)
 
-USER_SETTINGS = resource_path("csvFiles/user_settings.csv")
-ROOM_FILE = resource_path("csvFiles/room_variables.csv")
-CURRENT_STUDENTS_FILE = resource_path('csvFiles/current_entries.csv')
-LOG_FILE = resource_path('csvFiles/log_entries.csv')
-ITEMS_FILE = resource_path('csvFiles/inventory_in_use.csv')
-CURRENT_WEEK = resource_path('csvFiles/current_week.csv')
+def get_room_path():
+    return resource_path("csvFiles/room_variables.csv")
+
+def get_current_students_path():
+    return resource_path('csvFiles/current_entries.csv')
+
+def get_log_path():
+    return resource_path('csvFiles/log_entries.csv')
+
+def get_items_path():
+    return resource_path('csvFiles/inventory_in_use.csv')
+
+def get_current_week_path():
+    return resource_path('csvFiles/current_week.csv')
+
+def get_json():
+    return resource_path('client.json')
+
+def get_logo():
+    return resource_path('logo.png')
+
+#USER_SETTINGS = resource_path("csvFiles/user_settings.csv")
+#ROOM_FILE = resource_path("csvFiles/room_variables.csv")
+#CURRENT_STUDENTS_FILE = resource_path('csvFiles/current_entries.csv')
+#LOG_FILE = resource_path('csvFiles/log_entries.csv')
+#ITEMS_FILE = resource_path('csvFiles/inventory_in_use.csv')
+#CURRENT_WEEK = resource_path('csvFiles/current_week.csv')
 
 def csv_to_dict(csv_file_path):
     settings = {}
@@ -41,7 +63,7 @@ def csv_to_dict(csv_file_path):
                 settings[key] = int(value) 
     return settings
 
-def get_row_number(id, csv_file_path = LOG_FILE):
+def get_row_number(id, csv_file_path = get_log_path()):
     """
     Gets the row number of a specific user that is currently checked in
 
@@ -97,7 +119,7 @@ def update_dict(id, dict):
     Returns:
         dict: The dictionary of items borrowed
     """
-    file_path = LOG_FILE
+    file_path = get_log_path()
     with open(file_path, mode='r', newline='') as csvfile:
         csvreader = csv.reader(csvfile)
         rows = list(csvreader)
@@ -111,7 +133,7 @@ def update_dict(id, dict):
         csvwriter = csv.writer(csvfile)
         csvwriter.writerows(rows)
     
-    csv_file_path = CURRENT_STUDENTS_FILE
+    csv_file_path = get_current_students_path()
     with open(csv_file_path, mode='r', newline='') as csvfile:
         csvreader = csv.reader(csvfile)
         rows = list(csvreader)
@@ -125,7 +147,7 @@ def update_dict(id, dict):
         csvwriter.writerows(rows)
 
 
-def csv_to_dict(csv_file_path = ROOM_FILE):
+def csv_to_dict(csv_file_path = get_room_path()):
     """
     Used for inventory csvs, converts the csv to a dictionary.
 
@@ -178,7 +200,7 @@ def get_student_time(id):
     Returns:
         str: The time the user checked in
     """
-    with open(LOG_FILE, mode='r', newline='') as csvfile:
+    with open(get_log_path(), mode='r', newline='') as csvfile:
         csvreader = csv.reader(csvfile)
         next(csvreader, None)  
         for row in csvreader:
@@ -196,7 +218,7 @@ def get_student_name(id):
     Returns:
         str: The name of the user
     """
-    with open(CURRENT_STUDENTS_FILE, mode='r', newline='') as csvfile:
+    with open(get_current_students_path(), mode='r', newline='') as csvfile:
         csvreader = csv.reader(csvfile)
         next(csvreader, None)  
         #print(id)
@@ -205,7 +227,7 @@ def get_student_name(id):
                 return row[0].strip()
     return None
 
-def find_entries_from_today(csv_file_path = LOG_FILE):
+def find_entries_from_today(csv_file_path = get_log_path()):
     """
     Finds all entries from today.
 

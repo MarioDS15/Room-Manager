@@ -44,7 +44,7 @@ class LogsWindow(QMainWindow):
         self.logs.clear()
 
         # Open the CSV file and search
-        with open(LOG_FILE, newline='') as csvfile:
+        with open(get_log_path(), newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
                 # Check based on selected criteria and if the search text is in the column
@@ -68,7 +68,7 @@ class LogsWindow(QMainWindow):
         if selected_item:
             display_text = selected_item.text()
             id = display_text.split(',')[1].strip()
-            items = items_to_dict(LOG_FILE, id)
+            items = items_to_dict(get_log_path(), id)
             name = get_student_name(id)
             message = "Student has checked out:\n"
             for item in items:

@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QCheckBox, QListWidget, QListWidgetItem, QMessageBox, QToolBar
+from threading import Thread
 from PyQt5.QtCore import Qt, QTimer
 from room_variables import *
 from csv_handling import *
@@ -83,7 +84,7 @@ class RoomStatsWindow(QMainWindow):
         self.item_layout.addWidget(self.warning_label, 6, 0, 1, 2)
 
         self.reset_button = QPushButton("Reset")
-        self.reset_button.clicked.connect(self.reset_stats_display)
+        self.reset_button.clicked.connect(self.reset_stats_display_threaded)
         
         self.info_label = QLabel("This button will reset all counts to their inventory counts. \nOnly reset if all students are checked out.")
         self.info_label.setStyleSheet('color: #ff3d3d;')
@@ -117,14 +118,21 @@ class RoomStatsWindow(QMainWindow):
         self.timer.timeout.connect(self.update_room_stats)
         self.timer.start(600)
         
-
     def reset_stats_display(self):
         """Resets the room stats display and resets all counts to their inventory counts"""
         reset_count()
-        update_sheet(ROOM_FILE)
+        update_sheet(get_room_path())
         self.update_room_stats()
 
+    def reset_stats_display_threaded(self):
+        """Runs the reset_stats_display function in a separate thread."""
+        def task():
+            self.reset_stats_display()
         
+        # Create and start the thread
+        thread = Thread(target=task)
+        thread.start()
+
     def throw_error(self, message):
         error = QMessageBox()
         error.setWindowTitle("Error")

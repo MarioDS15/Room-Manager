@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QHB
 from PyQt5.QtCore import Qt
 from room_variables import *
 from csv_handling import *
+from threading import Thread
 
 class RoomSettingWindow(QMainWindow):
     def __init__(self):
@@ -84,7 +85,7 @@ class RoomSettingWindow(QMainWindow):
         self.item_layout.addWidget(self.current_mousepad_count, 6, 2)
 
         self.save_button = QPushButton("Save")
-        self.save_button.clicked.connect(self.save)
+        self.save_button.clicked.connect(self.save_threaded)
         self.item_layout.addWidget(self.save_button, 7, 0, 2, 2)
 
         pass
@@ -168,13 +169,24 @@ class RoomSettingWindow(QMainWindow):
             mousepad_count = self.Mousepad_count_entry.text()
             if mousepad_count.isdigit():
                 set_mousepad_count(int(mousepad_count))
+                self.current_mousepad_count.setText(f"Mousepad count: {get_max_mousepad_count()}")
+                self.Mousepad_count_entry.setText("")
             else:
                 self.throw_error("Please enter a valid mousepad count")
                 self.Mousepad_count_entry.setText("")
 
             
-        update_sheet(ROOM_FILE)
+        update_sheet(get_room_path())
         pass
+
+    def save_threaded(self):
+        """Runs the save function in a separate thread."""
+        def task():
+            self.save()
+        
+        # Create and start the thread
+        thread = Thread(target=task)
+        thread.start()
 
     def throw_error(self, message):
         error = QMessageBox()
