@@ -43,13 +43,17 @@ class Application(QMainWindow):
         self.checkedInGUI()
         self.timeoutGUI()
 
-
+        #self.aboutToQuit.connect(self.closeEvent)
         self.populate()
         self.populateTimeout()
         self.timer()
         #self.otherTimer()
         self.secondary_window = None
     
+    def closeEvent(self, event):
+        if self.secondary_window is not None:
+            self.secondary_window.close()
+
     def timer(self):
         self.timer = QTimer()
         self.timer.timeout.connect(self.routine)
@@ -277,7 +281,6 @@ class Application(QMainWindow):
         edit_inventory(itemDict, False)
         #self.remove_selected_item(self.checkedInList)
         self.clear()
-        self.clear()
         #upload_csv_to_sheet(CURRENT_STUDENTS_FILE, "Sheet1")
         self.upload_logs()
  
@@ -309,8 +312,8 @@ class Application(QMainWindow):
         name = get_student_name(selected_student)
         id = list_widget_to_id(selected_student)
         dict = items_to_dict(get_current_students_path(), id)
-        time = get_student_time(id)
-        set_prev_info(time, name, id)
+        #time = get_student_time(id)
+        #set_prev_info(time, name, id)
         # Obtain the information from the selected item
         edit_inventory(dict, True) # Edit the inventory to reflect the checkout
         log_checkout(id) # Log the checkout in the log file

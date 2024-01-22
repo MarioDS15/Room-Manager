@@ -126,6 +126,7 @@ if __name__ == "__main__":
         main_window.setWindowIcon(QIcon(get_logo()))
         main_window.activateWindow()
         main_window.raise_()
+
     # Connect the finished signal to both close the loading screen and show the main window
     startup_thread.finished.connect(loading_screen.close)
     startup_thread.finished.connect(show_main_window)
@@ -135,8 +136,7 @@ if __name__ == "__main__":
     # Start the event loop
     sys.exit(app.exec_())
 
-"""
-Done:
+"""Done:
 Implement remove entry [DONE]
 Fix display [DONE]
 Auto update time (Threading?) [DONE]
@@ -163,23 +163,30 @@ Edit a students entry [Item, ID, Name]
 Separate sheets by weeks
 Loading screen while app is booting up
 Items do not update on the cloud besides pc
-
+Mousepad not updating
+Handle race conditions
+Add threading to reset count
+Fix how room stats looks[Done?]
 In progress:
 Convert to application
 Synch to cloud
+Add logo for app
+Other windows do not close when main is closed
 
 To-do:
 Import stuff
-Handle race conditions
-Add threading to reset count
+
+
 Application
     -Add option to only require ID
+Check-out time not being included for logs, might have to redo find row implementation
 Try installing on mac, check for size changes
 Am I even downloading the weekly log?
 Searching logs fucks it up [  File "log_gui.py", line 52, in search_logs
 KeyError: 'ID']
-Add logo for app
-Mousepad not updating
-Fix how room stats looks
+Do I have to have race conditions for every function that edits logs directly
+Header got deleted again
+If there is no secondary window and the app is closed, theres a bug
+Item and room settings not updating
 """
 

@@ -77,37 +77,37 @@ def set_PC_in_use(PC_count):
     """Updates the amount of PCs in use in the room"""
     global PC_in_use
     #print("PC count " + str(PC_count))
-    update_row(get_room_path(), 'PC_count', PC_count)
+    update_row(get_items_path(), 'PC_count', PC_count)
     PC_in_use = int(PC_count)
 
 def set_headset_in_use(headset_count):
     """Updates the amount of headsets in use in the room"""
     global headset_in_use
-    update_row(get_room_path(), 'Headset_count', headset_count)
+    update_row(get_items_path(), 'Headset_count', headset_count)
     headset_in_use = headset_count
 
 def set_mouse_in_use(mouse_count):
     """Updates the amount of mice in use in the room"""
     global mouse_in_use
-    update_row(get_room_path(), 'Mouse_count', mouse_count)
+    update_row(get_items_path(), 'Mouse_count', mouse_count)
     mouse_in_use = mouse_count
 
 def set_keyboard_in_use(keyboard_count):
     """Updates the amount of keyboards in use in the room"""
     global keyboard_in_use
-    update_row(get_room_path(), 'Keyboard_count', keyboard_count)
+    update_row(get_items_path(), 'Keyboard_count', keyboard_count)
     keyboard_in_use = keyboard_count
 
 def set_controller_in_use(controller_count):
     """Updates the amount of controllers in use in the room"""
     global controller_in_use
-    update_row(get_room_path(), 'Controller_count', controller_count)
+    update_row(get_items_path(), 'Controller_count', controller_count)
     controller_in_use = controller_count
 
 def set_mousepad_in_use(mousepad_count):
     """Updates the amount of mousepads in use in the room"""
     global mousepad_in_use
-    update_row(get_room_path(), 'Mousepad_count', mousepad_count)
+    update_row(get_items_path(), 'Mousepad_count', mousepad_count)
     mousepad_in_use = mousepad_count
 
 def load_items():

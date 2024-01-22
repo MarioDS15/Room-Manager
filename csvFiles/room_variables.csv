@@ -1,8 +1,8 @@
 Variable, amount
 Time_limit,5
-PC_count,0
-Headset_count,0
-Keyboard_count,0
-Mouse_count,0
-Mousepad_count,0
-Controller_count,0
+PC_count,5
+Headset_count,5
+Keyboard_count,5
+Mouse_count,5
+Mousepad_count,5
+Controller_count,5

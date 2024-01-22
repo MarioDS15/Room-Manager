@@ -33,6 +33,8 @@ def log_entry(name, id, itemDict):
     
     return csv_to_list_widget(name, id, timestamp)
 
+
+
 def check_if_remaining_session(id):
     todayEntries = find_entries_from_today()
     if todayEntries:
@@ -256,7 +258,7 @@ def list_widget_to_id(list_widget):
     return id
 
 def remove_entry(id, csv_file_path = get_current_students_path()):
-    """Removes an entry from the CSV file.
+    """Removes an entry from current students
 
     Args:
         id (str): The ID of the student to be removed

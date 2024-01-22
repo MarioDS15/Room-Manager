@@ -9,7 +9,7 @@ class RoomStatsWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Room stats Window')
-        #self.setMinimumSize(400, 700)
+        #self.setMinimumSize(400, 400)
         # Create and set grid layout
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
@@ -18,16 +18,17 @@ class RoomStatsWindow(QMainWindow):
         # Data entry nested grid layout
         self.dataWidget = QWidget()
         self.item_layout = QGridLayout(self.dataWidget)
-        self.main_layout.addWidget(self.dataWidget, 1, 0)
+        self.main_layout.addWidget(self.dataWidget, 1, 0, Qt.AlignCenter)
 
         self.title_label = QLabel("Room stats")
-        self.main_layout.addWidget(self.title_label, 0, 0, 1, 2, Qt.AlignCenter)
+        self.main_layout.addWidget(self.title_label, 0, 0, Qt.AlignCenter)
         self.title_label.setStyleSheet("color: white; font-size: 30px; font-weight: bold;")
         self.dataEntryGUI()
         self.room_stats_timer()
 
 
     def dataEntryGUI(self):
+        self.item_layout.setColumnStretch(0, 1)
         """Creates the GUI for the room settings window"""
         self.pc_count = QLabel("{} PCs are available".format( get_max_pc_count() - get_PC_in_use()))
         self.pc_taken = QLabel("{} PCs are in use".format(get_PC_in_use()))
@@ -78,21 +79,21 @@ class RoomStatsWindow(QMainWindow):
         self.mousepad_taken.setAlignment(Qt.AlignCenter)
 
 
-        self.warning_label = QLabel("\nIf there are any items that are currently in the negatives:\n Check inventory and update the counts in the room settings tab.\nCheck if someone was not checked out.\nCheck if a student requested the wrong items.\n[All items should be in the positives after everyone is checked out.]\n")
-        self.warning_label.setStyleSheet('color: #747982;')
+        self.warning_label = QLabel("If there are any items that are currently in the negatives:\n Check inventory and update the counts in the room settings tab. Check if someone was not checked out.Check if a student requested the wrong items.[All items should be in the positives after everyone is checked out.]")
+        self.warning_label.setStyleSheet('color: #ff3d3d;font-size: 8pt;')
+        self.warning_label.setWordWrap(True)
         self.warning_label.setAlignment(Qt.AlignCenter)
-        self.item_layout.addWidget(self.warning_label, 6, 0, 1, 2)
+        self.item_layout.addWidget(self.warning_label, 6, 0)
 
         self.reset_button = QPushButton("Reset")
         self.reset_button.clicked.connect(self.reset_stats_display_threaded)
         
         self.info_label = QLabel("This button will reset all counts to their inventory counts. \nOnly reset if all students are checked out.")
-        self.info_label.setStyleSheet('color: #ff3d3d;')
-        self.info_label.font().setPointSize(4)
+        self.info_label.setStyleSheet('color: #ff3d3d;font-size: 8pt;')
         self.info_label.setAlignment(Qt.AlignCenter)
-        self.item_layout.addWidget(self.info_label, 7, 1, 1, 1)
-        self.item_layout.addWidget(self.reset_button, 7, 0, 1, 1)
-    
+        self.item_layout.addWidget(self.info_label, 7, 1)
+        self.item_layout.addWidget(self.reset_button, 7, 0)
+
 
 
     def update_room_stats(self):
