@@ -1,4 +1,3 @@
 Name,ID,Check-in time,Equipment,Check-out Time
-Test,G01107815,2024-01-22 19:02:53,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",
-Test,G11223344,2024-01-22 20:07:11,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",
-Hussain,G94951111,2024-01-22 21:56:04,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",
+Test,G11223344,2024-01-23 13:57:23,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-23 13:58:12
+Test,G44556677,2024-01-23 13:57:56,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-23 13:57:57

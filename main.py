@@ -167,26 +167,24 @@ Mousepad not updating
 Handle race conditions
 Add threading to reset count
 Fix how room stats looks[Done?]
-In progress:
-Convert to application
 Synch to cloud
 Add logo for app
 Other windows do not close when main is closed
+Header got deleted again
+If there is no secondary window and the app is closed, theres a bug
+
+In progress:
+Convert to application
+
 
 To-do:
-Import stuff
-
-
 Application
     -Add option to only require ID
 Check-out time not being included for logs, might have to redo find row implementation
 Try installing on mac, check for size changes
-Am I even downloading the weekly log?
 Searching logs fucks it up [  File "log_gui.py", line 52, in search_logs
 KeyError: 'ID']
 Do I have to have race conditions for every function that edits logs directly
-Header got deleted again
-If there is no secondary window and the app is closed, theres a bug
-Item and room settings not updating
+Create a function to delete conflicts
 """
 

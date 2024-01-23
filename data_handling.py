@@ -54,11 +54,14 @@ def log_checkout(id):
         csvreader = csv.reader(file)
         rowNumber = 0
         for row in csvreader:
-            print(rowNumber, get_row_number(id),row,)
+            print(id, rowNumber, get_row_number(id),row)
             
             # Assuming the ID is in the 2nd column (index 1)
             if rowNumber == get_row_number(id):
-                row.append(current_time.strftime('%Y-%m-%d %H:%M:%S'))  
+                if len(row) < 5:
+                    row.append(current_time.strftime('%Y-%m-%d %H:%M:%S'))  
+                else:
+                    row[4] = current_time.strftime('%Y-%m-%d %H:%M:%S')
             rowNumber += 1
             updated_entries.append(row)
 

@@ -81,8 +81,10 @@ def get_row_number(id, csv_file_path = get_log_path()):
         row_index = 0  # Starting from 1 to account for the header row
         for row in csvreader:
             row_index += 1  # Increment row index for each row
-            if row and row[1].strip() == id and len(row) < 5:
-                return row_index
+            if len(row) > 1 and row[1].strip() == id:
+                # Check if the Check-out Time column is either missing or empty
+                if len(row) == 4 or (len(row) > 4 and not row[4].strip()):
+                    return row_index
     return None
 
 
