@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QCheckBox, QListWidget, QListWidgetItem, QMessageBox, QToolBar, QMenu, QAction
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QThread
 from room_settings_GUI import *
 from data_handling import *
 from datetime import datetime, timedelta
@@ -14,9 +14,11 @@ import sys
 #from csv_handling import *
 #from csv_handling import *
 import threading
+from lock import *
 
+""" py -m PyInstaller --onefile --clean --add-data "csvFiles;csvFiles" --add-data "logo.png;." --add-data "client.json;." main.py"""
 class Application(QMainWindow):
-
+    update_gui_signal = pyqtSignal()
 
     #upload_file('current_entries.csv', 'csvFiles/current_entries.csv', 'text/csv')
     def __init__(self):
@@ -47,9 +49,32 @@ class Application(QMainWindow):
         self.populate()
         self.populateTimeout()
         self.timer()
-        #self.otherTimer()
+        self.otherTimer()
+        
+        self.update_gui_signal.connect(self.run_update_gui) 
         self.secondary_window = None
-    
+        
+    def run_update_gui(self):
+        """Initiates update_gui in a worker thread"""
+        worker = threading.Thread(target=self.update_gui)
+        worker.start()
+
+    def update_gui(self):
+        with lock:
+            print("Locking from update_gui")
+            retrieve_all()
+            self.remove_all_list_widgets(self.checkedInList)
+            self.populate()
+            self.remove_all_list_widgets(self.timeoutList)
+            self.populateTimeout()
+            print("Unlocked from update_gui")
+
+
+    #Runs every time frame to update people that got timed out
+    def routine(self):
+        """Runs every minute to update the display and synchs data with the cloud"""
+        self.update_gui_signal.emit()
+
     def closeEvent(self, event):
         if self.secondary_window is not None:
             self.secondary_window.close()
@@ -57,13 +82,12 @@ class Application(QMainWindow):
     def timer(self):
         self.timer = QTimer()
         self.timer.timeout.connect(self.routine)
-        self.timer.start(60000)
+        self.timer.start(1200000)
  
     def otherTimer(self):
         self.timer2 = QTimer()
         self.timer2.timeout.connect(self.routine_second)
         self.timer2.start(1000)
-
 
     def open_room_settings(self):
         """Opens the room settings window"""
@@ -247,43 +271,48 @@ class Application(QMainWindow):
         self.log_button.clicked.connect(self.log)
 
     def log(self): #Reject based on verification
-        """Logs the student into the system if the information is valid, the student is not already logged in, and the student has not exceeded the amount of sessions allowed per day"""
-        if verify_id(self.id_entry.text()) == False:
-            self.throwPrompt("Entry Error", "Invalid ID number entered")
-            return
-        if verify_name(self.name_entry.text()) == False:
-            self.throwPrompt("Entry Error", "Invalid name entered")
-            return
         
-        # Obtain information from the data entry fields
-        name = self.name_entry.text()
-        id_number = id_convert(self.id_entry.text())
-        keyboard = self.keyboard_cb.isChecked()
-        mouse = self.mouse_cb.isChecked()
-        headset = self.headset_cb.isChecked()
-        controller = self.controller_cb.isChecked()
-        mousepad = self.mousepad_cb.isChecked()
-        itemDict = {"Keyboard": keyboard, "Mouse": mouse, "Headset": headset, "Controller": controller, "Mousepad": mousepad}
-        if check_if_remaining_session(id_number) == False:
-            self.throwPrompt("Entry Error", "Student already exceeded amount of daily sessions allowed.")
-            return
-        try:
-            self.checkedInList.addItem(log_entry(name, id_number, itemDict))
-        except:
-            self.throwPrompt("Entry Error", f"Entry with ID {id_number} already exists.")
+        with lock:
+            print("Locking from log")
+            """Logs the student into the system if the information is valid, the student is not already logged in, and the student has not exceeded the amount of sessions allowed per day"""
+            if verify_id(self.id_entry.text()) == False:
+                self.throwPrompt("Entry Error", "Invalid ID number entered")
+                return
+            if verify_name(self.name_entry.text()) == False:
+                self.throwPrompt("Entry Error", "Invalid name entered")
+                return
+            
+            # Obtain information from the data entry fields
+            name = self.name_entry.text()
+            id_number = id_convert(self.id_entry.text())
+            keyboard = self.keyboard_cb.isChecked()
+            mouse = self.mouse_cb.isChecked()
+            headset = self.headset_cb.isChecked()
+            controller = self.controller_cb.isChecked()
+            mousepad = self.mousepad_cb.isChecked()
+            itemDict = {"Keyboard": keyboard, "Mouse": mouse, "Headset": headset, "Controller": controller, "Mousepad": mousepad}
+            if check_if_remaining_session(id_number) == False:
+                self.throwPrompt("Entry Error", "Student already exceeded amount of daily sessions allowed.")
+                return
+            try:
+                self.checkedInList.addItem(log_entry(name, id_number, itemDict))
+            except:
+                self.throwPrompt("Entry Error", f"Entry with ID {id_number} already exists.")
+                self.clear()
+                return
+            #self.set_get_prev_info(datetime.now().strftime("%H:%M:%S"), name, id_number)
+            # Check if any items are out of stock
+            if(checkInventory() != False):
+                msg = "The following items requested are out of stock: " + checkInventory() + "\n" + "The student has still been checked in but the items might be out of stock, check room stats to monitor the items in use or check if any student forgot to check out."
+                self.throwPrompt("Inventory Warning", msg)
+            edit_inventory(itemDict, False)
+            #self.remove_selected_item(self.checkedInList)
             self.clear()
-            return
-        #self.set_get_prev_info(datetime.now().strftime("%H:%M:%S"), name, id_number)
-        # Check if any items are out of stock
-        if(checkInventory() != False):
-            msg = "The following items requested are out of stock: " + checkInventory() + "\n" + "The student has still been checked in but the items might be out of stock, check room stats to monitor the items in use or check if any student forgot to check out."
-            self.throwPrompt("Inventory Warning", msg)
-        edit_inventory(itemDict, False)
-        #self.remove_selected_item(self.checkedInList)
-        self.clear()
-        #upload_csv_to_sheet(CURRENT_STUDENTS_FILE, "Sheet1")
-        self.upload_logs()
- 
+            #upload_csv_to_sheet(CURRENT_STUDENTS_FILE, "Sheet1")
+            self.upload_logs()
+            print("Unlocked from log")
+
+
     def undo_checkout(self):
         self.checkedInList.addItem(get_prev_info())
         self.routine()
@@ -300,37 +329,35 @@ class Application(QMainWindow):
             #self.checkedInList.setCurrentItem(currentSelected)
 
     def checkOut(self, list_widget = None, selected_student = None, all = False):
-        """Checks out the currently selected student"""
-        if selected_student is None:
-            selected_student = list_widget.currentItem()
-        if selected_student is None:
-            selected_student = self.timeoutList.currentItem()
-            list_widget = self.timeoutList
-        if selected_student is None:
-            self.throwPrompt("Checkout Error", "No student selected")
-            return
-        name = get_student_name(selected_student)
-        id = list_widget_to_id(selected_student)
-        dict = items_to_dict(get_current_students_path(), id)
-        #time = get_student_time(id)
-        #set_prev_info(time, name, id)
-        # Obtain the information from the selected item
-        edit_inventory(dict, True) # Edit the inventory to reflect the checkout
-        log_checkout(id) # Log the checkout in the log file
-        remove_entry(id) # Remove the entry from the current entries file
-        self.remove_selected_item(list_widget) # Remove the entry from the display
-        if not all:
-            self.upload_logs()
+        with lock:
+            """Checks out the currently selected student"""
+            print("Locking from checkout")
+            if selected_student is None:
+                selected_student = list_widget.currentItem()
+            if selected_student is None:
+                selected_student = self.timeoutList.currentItem()
+                list_widget = self.timeoutList
+            if selected_student is None:
+                self.throwPrompt("Checkout Error", "No student selected")
+
+                return
+            name = get_student_name(selected_student)
+            id = list_widget_to_id(selected_student)
+            dict = items_to_dict(get_current_students_path(), id)
+            edit_inventory(dict, True) # Edit the inventory to reflect the checkout
+            log_checkout(id) # Log the checkout in the log file
+            remove_entry(id) # Remove the entry from the current entries file
+            self.remove_selected_item(list_widget) # Remove the entry from the display
+            if not all:
+                self.upload_logs()
+            print("Unlocked from checkout")
+
         
     def upload_logs(self):
         """Starts a thread to upload the logs to the google sheet"""
         thread = threading.Thread(target=update_sheets)
         thread.start()
 
-    def retrieve_all(self):
-        """Starts a thread to retrieve all the data from the google sheet"""
-        thread = threading.Thread(target=retrieve_all)
-        thread.start()
 
     def show_context_menu(self, position, list_widget):
         item = list_widget.itemAt(position)
@@ -431,15 +458,7 @@ class Application(QMainWindow):
             list_widget (QListWidget): The list widget to remove the items from"""
         list_widget.clear()
 
-    #Runs every time frame to update people that got timed out
-    def routine(self):
-        """Runs every minute to update the display and synchs data with the cloud"""
-        print("Routine")
-        self.retrieve_all()
-        self.remove_all_list_widgets(self.checkedInList)
-        self.populate()
-        self.remove_all_list_widgets(self.timeoutList)
-        self.populateTimeout()
+
 
     def routine_second(self):
         """Runs every second to check if the user is connected to the internet"""

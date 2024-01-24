@@ -5,6 +5,7 @@ from room_variables import *
 from data_loader import *
 from StudentWidget import *
 import csv
+from lock import *
 CSV_FILE_PATH = get_current_students_path()
 
 
@@ -287,6 +288,8 @@ def edit_inventory(itemDict, returning = False):
     Args:
         itemDict (dict): A dictionary containing the items to be checked in/out.
         returning (bool, optional): Whether the items are being checked in or out. Defaults to False."""
+    #if not itemDict["Keyboard"]:
+        #return
     if returning:
         if itemDict["Keyboard"] and get_keyboard_in_use() < get_max_keyboard_count():
             set_keyboard_in_use(get_keyboard_in_use() - 1)

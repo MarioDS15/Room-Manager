@@ -4,6 +4,7 @@ from threading import Thread
 from PyQt5.QtCore import Qt, QTimer
 from room_variables import *
 from csv_handling import *
+from lock import *
 
 class RoomStatsWindow(QMainWindow):
     def __init__(self):
@@ -121,9 +122,10 @@ class RoomStatsWindow(QMainWindow):
         
     def reset_stats_display(self):
         """Resets the room stats display and resets all counts to their inventory counts"""
-        reset_count()
-        update_sheet(get_room_path())
-        self.update_room_stats()
+        with lock:
+            reset_count()
+            update_sheet(get_room_path())
+            self.update_room_stats()
 
     def reset_stats_display_threaded(self):
         """Runs the reset_stats_display function in a separate thread."""

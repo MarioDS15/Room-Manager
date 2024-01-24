@@ -101,6 +101,7 @@ def retrieve_all():
     retrieve_sheet("Item Settings")
     print("Done retrieving")
 
+
 def is_connected(hostname="8.8.8.8", port=53, timeout=3):
     """
     Check if there is an internet connection.
