@@ -250,7 +250,7 @@ def id_convert(id):
 
 def verify_name(name):
     """Checks if the name is valid."""
-    if len(name) > 0 and name.isalpha():
+    if len(name) > 0 and len(name) < 25:
         return True
     return False
 
@@ -301,7 +301,7 @@ def edit_inventory(itemDict, returning = False):
             set_controller_in_use(get_controller_in_use() - 1)
         if itemDict['Mousepad'] and get_mousepad_in_use() < get_max_mousepad_count():
             set_mousepad_in_use(get_mousepad_in_use() - 1)
-        set_PC_in_use(get_PC_in_use() - 1)
+        #set_PC_in_use(get_PC_in_use() - 1)
     else:
         if itemDict["Keyboard"]:
             set_keyboard_in_use(get_keyboard_in_use() + 1)
@@ -313,7 +313,7 @@ def edit_inventory(itemDict, returning = False):
             set_controller_in_use(get_controller_in_use() + 1)
         if itemDict['Mousepad']:
             set_mousepad_in_use(get_mousepad_in_use() + 1)
-        set_PC_in_use(get_PC_in_use() + 1)
+        #set_PC_in_use(get_PC_in_use() + 1)
 
 def checkInventory():
     """Checks if there are any items out of stock."""

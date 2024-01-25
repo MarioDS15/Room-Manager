@@ -9,6 +9,7 @@ from data_loader import *
 from room_stats_gui import *
 from log_gui import *
 from item_edit_gui import *
+from FAQWindow import *
 import csv
 import sys
 #from csv_handling import *
@@ -24,8 +25,9 @@ class Application(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Office Hours Check-in")
-        self.setMinimumSize(900, 500)
+        self.setWindowTitle("Office Hours Check-in System")
+
+        self.setMinimumSize(1000, 500)
         #self.setFixedSize(900, 500)
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
@@ -33,11 +35,12 @@ class Application(QMainWindow):
 
         self.dataWidget = QWidget()
         self.data_layout = QGridLayout(self.dataWidget)
-        self.main_layout.addWidget(self.dataWidget, 0, 0)
+        self.main_layout.addWidget(self.dataWidget, 1, 0)
 
         self.title_label = QLabel("Office Hours Check-in")
-        self.title_label.setStyleSheet("color: white; font-size: 30px; font-weight: bold;")
-        self.data_layout.addWidget(self.title_label, 0, 0, 1, 2)
+        self.title_label.setStyleSheet("color: #cfcfcf; font-size: 30px; font-weight: bold;")
+        self.title_label.setAlignment(Qt.AlignCenter)
+        self.main_layout.addWidget(self.title_label, 0, 0, 1, 2)
         self.toolbar()
         #self.retrieve_all()
         self.dataEntryGUI()
@@ -82,7 +85,7 @@ class Application(QMainWindow):
     def timer(self):
         self.timer = QTimer()
         self.timer.timeout.connect(self.routine)
-        self.timer.start(1200000)
+        self.timer.start(300000)
  
     def otherTimer(self):
         self.timer2 = QTimer()
@@ -145,6 +148,18 @@ class Application(QMainWindow):
     def open_edit_items_window_destroyed(self):
         self.secondary_window = None
 
+    def open_FAQ(self):
+        if self.secondary_window is None:
+            self.secondary_window = FAQWindow()
+            self.secondary_window.show()
+            self.secondary_window.setAttribute(Qt.WA_DeleteOnClose)
+            self.secondary_window.destroyed.connect(self.open_FAQ_window_destroyed)
+        else:
+            self.secondary_window.show()
+
+    def open_FAQ_window_destroyed(self):
+        self.secondary_window = None
+
     def toolbar(self):
         """Creates the toolbar for the main window"""
         self.toolbar = QToolBar("Toolbar")
@@ -168,6 +183,9 @@ class Application(QMainWindow):
         self.logs = toolbar.addAction("Logs")
         self.logs.triggered.connect(self.open_logs)
 
+        self.FAQ = toolbar.addAction("FAQ")
+        self.FAQ.triggered.connect(self.open_FAQ)
+
     def dataEntryGUI(self):
         # Name entry widgets
         self.name_label = QLabel("Enter Name")
@@ -176,7 +194,7 @@ class Application(QMainWindow):
         self.data_layout.addWidget(self.name_entry, 1, 1)
 
         # ID entry widgets
-        self.id_label = QLabel("Enter ID number")
+        self.id_label = QLabel("Enter ID")
         self.id_entry = QLineEdit()
         self.data_layout.addWidget(self.id_label, 2, 0)
         self.data_layout.addWidget(self.id_entry, 2, 1)
@@ -191,7 +209,7 @@ class Application(QMainWindow):
         # Item entry nested grid layout
         self.itemWidget = QWidget()
         self.item_layout = QGridLayout(self.itemWidget)
-        self.main_layout.addWidget(self.itemWidget, 0, 1)
+        self.main_layout.addWidget(self.itemWidget, 1, 1)
 
         # Items being checked out
         self.item_label = QLabel("Items being checked out")
@@ -200,19 +218,19 @@ class Application(QMainWindow):
         self.headset_cb = QCheckBox("Headset")
         self.controller_cb = QCheckBox("Controller")
         self.mousepad_cb = QCheckBox("Mousepad")
-        self.item_layout.addWidget(self.item_label, 2, 0)
+        #self.item_layout.addWidget(self.item_label, 2, 0)
         self.item_layout.addWidget(self.keyboard_cb, 3, 0)
         self.item_layout.addWidget(self.mouse_cb, 4, 0)
         self.item_layout.addWidget(self.headset_cb, 5, 0)
-        self.item_layout.addWidget(self.controller_cb, 6, 0)
-        self.item_layout.addWidget(self.mousepad_cb, 7, 0)
+        self.item_layout.addWidget(self.controller_cb, 3, 1)
+        self.item_layout.addWidget(self.mousepad_cb, 4, 1)
 
     def checkedInGUI(self):
         """Creates the GUI for the checked in students"""
         # Checked in students 
         self.checkedInWidget = QWidget()
         self.checkedInlayout = QGridLayout(self.checkedInWidget)
-        self.main_layout.addWidget(self.checkedInWidget, 1, 0)
+        self.main_layout.addWidget(self.checkedInWidget, 2, 0)
 
         # Students logged in display
         self.checked_in_label = QLabel("Students logged in")
@@ -243,7 +261,7 @@ class Application(QMainWindow):
         """Creates the GUI for the timed out students"""
         self.timeoutWidget = QWidget()
         self.timeoutlayout = QGridLayout(self.timeoutWidget)
-        self.main_layout.addWidget(self.timeoutWidget, 1, 1)
+        self.main_layout.addWidget(self.timeoutWidget, 2, 1)
         self.timeoutlabel = QLabel("Time has ended for these students ")
         self.timeoutList = QListWidget()
         self.timeoutList.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -253,16 +271,21 @@ class Application(QMainWindow):
         self.timeoutlayout.addWidget(self.timeoutList, 1, 0, 1, 2)
 
         # Checkout button
-        self.checkout_all_button = QPushButton("Checkout all expired students")
+        self.checkout_all_button = QPushButton("Checkout expired students")
+        #self.checkout_all_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.timeoutlayout.addWidget(self.checkout_all_button, 2, 0)  
         self.checkout_all_button.clicked.connect(lambda: self.checkout_all(self.timeoutList))
 
         # Item buttons
         self.extra_button = QPushButton("Checkout all students")
+        self.extra_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.timeoutlayout.addWidget(self.extra_button, 2, 1)  
         self.extra_button.clicked.connect(lambda: self.checkout_all(self.checkedInList))
 
         self.timeoutList.itemSelectionChanged.connect(lambda: self.clear_selection(self.timeoutList))
+
+        self.timeoutlayout.setColumnStretch(0, 1)
+        self.timeoutlayout.setColumnStretch(1, 1)
 
     def checkout_buttons_gui(self):
         """Creates the GUI for the checkout buttons"""

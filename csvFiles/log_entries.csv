@@ -1,9 +1,17 @@
 Name,ID,Check-in time,Equipment,Check-out Time
-Test,G11223344,2024-01-23 13:57:23,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-23 13:58:12
-Test,G44556677,2024-01-23 13:57:56,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-23 13:57:57
-Test,G11223344,2024-01-23 21:54:03,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-24 15:23:18
-Test,G11223346,2024-01-23 22:04:57,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-23 16:28:04
-Test,G55667788,2024-01-23 22:05:01,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-24 15:23:15
-urmom,G12931425,2024-01-23 16:54:14,"{'Keyboard': True, 'Mouse': True, 'Headset': False, 'Controller': False, 'Mousepad': True}",2024-01-24 15:23:17
-Test,G11223344,2024-01-24 17:44:47,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-24 18:38:13
-Test,G22334455,2024-01-24 18:28:44,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-24 18:37:02
+Cara,G01246508,2024-01-24 11:16:00,"{'Keyboard': True, 'Mouse': True, 'Headset': True, 'Controller': False, 'Mousepad': True}",2024-01-24 11:17:51
+John,G01301954,2024-01-24 13:12:26,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-24 15:17:09
+Caleb,G01353100,2024-01-24 13:12:37,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-24 15:17:01
+Chase,G01426392,2024-01-24 13:12:50,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-24 15:17:20
+Nash,G01261622,2024-01-24 13:13:19,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-24 14:45:09
+Ilia,G01368407,2024-01-24 13:15:02,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-24 15:23:56
+Demilade,G01447656,2024-01-24 13:32:32,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-24 15:16:30
+Nadir,G01384682,2024-01-24 13:54:04,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-24 15:20:15
+Maria,G01368542,2024-01-24 13:55:15,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-24 15:14:55
+Dennis,G01427827,2024-01-24 14:51:01,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-24 15:23:48
+Veronica,G01114904,2024-01-24 14:51:20,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-24 16:19:35
+Eddy,G01354553,2024-01-24 14:56:51,"{'Keyboard': True, 'Mouse': True, 'Headset': True, 'Controller': False, 'Mousepad': True}",2024-01-24 15:55:10
+Khaled,G01423451,2024-01-24 14:57:16,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-24 15:24:31
+Chris,G01307158,2024-01-24 15:24:32,"{'Keyboard': True, 'Mouse': True, 'Headset': True, 'Controller': True, 'Mousepad': False}",2024-01-24 16:19:36
+Nicki,G01330934,2024-01-24 15:24:52,"{'Keyboard': True, 'Mouse': True, 'Headset': True, 'Controller': True, 'Mousepad': False}",2024-01-24 16:19:36
+Test,G11445566,2024-01-25 17:02:29,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-25 17:02:34

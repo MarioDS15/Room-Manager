@@ -1,6 +1,9 @@
 ('C:\\Users\\husky\\OneDrive\\GMU esports\\Room '
  'Manager\\build\\OfficeHours\\PYZ-00.pyz',
- [('PyQt5',
+ [('FAQWindow',
+   'C:\\Users\\husky\\OneDrive\\GMU esports\\Room Manager\\FAQWindow.py',
+   'PYMODULE'),
+  ('PyQt5',
    'C:\\Users\\husky\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\PyQt5\\__init__.py',
    'PYMODULE'),
   ('StudentWidget',

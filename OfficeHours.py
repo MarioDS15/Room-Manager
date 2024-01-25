@@ -186,8 +186,7 @@ Searching logs fucks it up [  File "log_gui.py", line 52, in search_logs
 KeyError: 'ID']
 Do I have to have race conditions for every function that edits logs directly
 Create a function to delete conflicts
-Logs fucks up when searching
-Routine fucks it up?
-Toolbar can be hidden
+
+Fix window issue
 """
 

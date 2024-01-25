@@ -86,7 +86,7 @@ class RoomSettingWindow(QMainWindow):
 
         self.save_button = QPushButton("Save")
         self.save_button.clicked.connect(self.save_threaded)
-        self.item_layout.addWidget(self.save_button, 7, 0, 2, 2)
+        self.item_layout.addWidget(self.save_button, 7, 0, 2, 3)
 
         pass
 
@@ -102,18 +102,20 @@ class RoomSettingWindow(QMainWindow):
                 self.current_time_limit.setText(f"Current time limit: {total_hours} hrs")
                 self.Time_limit_entry.setText("")
             else:
-                self.throw_error("Please enter a valid time limit (in hours)")
+                self.throw_message("Please enter a valid time limit (in hours)")
                 self.Time_limit_entry.setText("")
         
         #PC
         if self.PC_count_entry.text():
             pc_count = self.PC_count_entry.text()
+            print(pc_count)
             if pc_count.isdigit():
                 set_max_pc_count(int(pc_count))
                 self.current_pc_count.setText(f"PC count: {get_max_pc_count()}")
                 self.PC_count_entry.setText("")
             else:
-                self.throw_error("Please enter a valid PC count")
+                print("Throwing Message")
+                self.throw_message("Please enter a valid PC count")
                 self.PC_count_entry.setText("")
             
         #Headset
@@ -124,7 +126,7 @@ class RoomSettingWindow(QMainWindow):
                 self.current_headset_count.setText(f"Headset count: {get_max_headset_count()}")
                 self.Headset_count_entry.setText("")
             else:
-                self.throw_error("Please enter a valid headset count")
+                self.throw_message("Please enter a valid headset count")
                 self.Headset_count_entry.setText("")
 
             
@@ -136,7 +138,7 @@ class RoomSettingWindow(QMainWindow):
                 self.current_mouse_count.setText(f"Mouse count: {get_max_mouse_count()}")
                 self.Mouse_count_entry.setText("")
             else:
-                self.throw_error("Please enter a valid mouse count")
+                self.throw_message("Please enter a valid mouse count")
                 self.Mouse_count_entry.setText("")
 
             
@@ -148,7 +150,7 @@ class RoomSettingWindow(QMainWindow):
                 self.current_keyboard_count.setText(f"Keyboard count: {get_max_keyboard_count()}")
                 self.Keyboard_count_entry.setText("")
             else:
-                self.throw_error("Please enter a valid keyboard count")
+                self.throw_message("Please enter a valid keyboard count")
                 self.Keyboard_count_entry.setText("")
 
         
@@ -160,7 +162,7 @@ class RoomSettingWindow(QMainWindow):
                 self.current_controller_count.setText(f"Controller count: {get_max_controller_count()}")
                 self.Controller_count_entry.setText("")
             else:
-                self.throw_error("Please enter a valid controller count")
+                self.throw_message("Please enter a valid controller count")
                 self.Controller_count_entry.setText("")
 
         
@@ -172,7 +174,7 @@ class RoomSettingWindow(QMainWindow):
                 self.current_mousepad_count.setText(f"Mousepad count: {get_max_mousepad_count()}")
                 self.Mousepad_count_entry.setText("")
             else:
-                self.throw_error("Please enter a valid mousepad count")
+                self.throw_message("Please enter a valid mousepad count")
                 self.Mousepad_count_entry.setText("")
 
             
@@ -181,16 +183,13 @@ class RoomSettingWindow(QMainWindow):
 
     def save_threaded(self):
         """Runs the save function in a separate thread."""
+        self.save()
         def task():
-            self.save()
+            update_sheet(get_room_path())
         
         # Create and start the thread
         thread = Thread(target=task)
         thread.start()
 
-    def throw_error(self, message):
-        error = QMessageBox()
-        error.setWindowTitle("Error")
-        error.setText(message)
-        error.setIcon(QMessageBox.Critical)
-        error.exec_()
+    def throw_message(self, message):
+        QMessageBox.information(self, "Error", message)

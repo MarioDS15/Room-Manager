@@ -71,6 +71,7 @@ class LogsWindow(QMainWindow):
             items = items_to_dict(get_log_path(), id)
             name = get_student_name(id)
             message = "Student has checked out:\n"
+            anyItems = False
             for item in items:
                 if items[item] == True:
                     anyItems = True
