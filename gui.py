@@ -37,7 +37,7 @@ class Application(QMainWindow):
         self.data_layout = QGridLayout(self.dataWidget)
         self.main_layout.addWidget(self.dataWidget, 1, 0)
 
-        self.title_label = QLabel("Office Hours Check-in")
+        self.title_label = QLabel("Office Hours Check-in System")
         self.title_label.setStyleSheet("color: #cfcfcf; font-size: 30px; font-weight: bold;")
         self.title_label.setAlignment(Qt.AlignCenter)
         self.main_layout.addWidget(self.title_label, 0, 0, 1, 2)
@@ -412,6 +412,7 @@ class Application(QMainWindow):
 
     def populate(self): 
         """Populates the checked in list with the current students"""
+        print("Populating")
         checkedInDict = load_current_sessions(get_current_students_path())
         for id, session_info in checkedInDict.items():
             # Extract individual data from session_info

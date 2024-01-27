@@ -117,8 +117,7 @@ if __name__ == "__main__":
     # Create and start startup thread
     startup_thread = StartupThread()
 
-    # Initialize main window but do not show it yet
-    main_window = Application()
+
 
     # Function to show the main window
     def show_main_window():
@@ -133,6 +132,8 @@ if __name__ == "__main__":
 
     startup_thread.start()
 
+    # Initialize main window but do not show it yet
+    main_window = Application()
     # Start the event loop
     sys.exit(app.exec_())
 input("Press enter to exit")
