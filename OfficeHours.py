@@ -86,56 +86,49 @@ class StartupThread(QThread):
     finished = pyqtSignal()
 
     def run(self):
-        on_startup(loading_screen)
+        # Replace these function calls with your actual startup logic
+        retrieve_all()
+        load_items()
+        load_items_in_use()
         self.finished.emit()
 
 def main():
-    print("User settings path:", get_room_path())
-    print("Room file path:", get_room_path())
-    room_settings_path = get_room_path()
-    
-
-if __name__ == "__main__":
-    from data_handling import *
-    from PyQt5.QtWidgets import QApplication
-    from gui import Application
-    from google_auth_oauthlib.flow import InstalledAppFlow
-    from googleapiclient.discovery import build
-    import os
-    main()
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
     app.setStyleSheet(stylesheet)
+
     if not is_connected():
-        QMessageBox.information(None, "Connection Error", "No internet connection detected, please reconnect to the internet and restart the program.")
+        QMessageBox.information(None, "Connection Error", "No internet connection detected. Please reconnect to the internet and restart the program.")
         sys.exit()
 
     # Initialize and show loading screen
     loading_screen = LoadingScreen()
     loading_screen.show()
 
-    # Create and start startup thread
+    # Create the startup thread
     startup_thread = StartupThread()
 
-
-
-    # Function to show the main window
-    def show_main_window():
-        main_window.show()
+    # Function to execute after startup is complete
+    def on_startup_finished():
+        # Initialize and show the main application window
+        main_window = Application()
         main_window.setWindowIcon(QIcon(get_logo()))
+        main_window.show()
         main_window.activateWindow()
         main_window.raise_()
+        loading_screen.close()
 
-    # Connect the finished signal to both close the loading screen and show the main window
-    startup_thread.finished.connect(loading_screen.close)
-    startup_thread.finished.connect(show_main_window)
+    # Connect the finished signal to the on_startup_finished function
+    startup_thread.finished.connect(on_startup_finished)
 
+    # Start the startup thread
     startup_thread.start()
 
-    # Initialize main window but do not show it yet
-    main_window = Application()
     # Start the event loop
     sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()
 input("Press enter to exit")
 """Done:
 Implement remove entry [DONE]

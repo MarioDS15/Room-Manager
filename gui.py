@@ -27,8 +27,11 @@ class Application(QMainWindow):
 
         self.setWindowTitle("Office Hours Check-in System")
 
-        self.setMinimumSize(1000, 500)
-        #self.setFixedSize(900, 500)
+        initial_size = self.size()
+        self.setMinimumSize(initial_size)
+        self.setMaximumSize(initial_size)
+
+        self.setFixedSize(1000, 500)
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
         self.main_layout = QGridLayout(central_widget)

@@ -9,7 +9,9 @@ class RoomSettingWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Room settings Window')
-
+        initial_size = self.size()
+        self.setMinimumSize(initial_size)
+        self.setMaximumSize(initial_size)
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
         self.main_layout = QGridLayout(central_widget)
@@ -17,7 +19,7 @@ class RoomSettingWindow(QMainWindow):
         self.dataWidget = QWidget()
         self.item_layout = QGridLayout(self.dataWidget)
         self.main_layout.addWidget(self.dataWidget, 1, 0)
-
+        self.setFixedSize(500, 400)
         self.title_label = QLabel("Room Settings")
         self.main_layout.addWidget(self.title_label, 0, 0, 1, 2, Qt.AlignCenter)
         self.title_label.setStyleSheet("color: white; font-size: 30px; font-weight: bold;")

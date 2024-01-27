@@ -10,7 +10,7 @@ class EditItemsWindow(QMainWindow):
     def __init__(self, name, id, dict):
         super().__init__()
         self.setWindowTitle('Edit Items Window')
-        self.setMinimumSize(300, 500)
+        #self.setMinimumSize(300, 500)
         self.setFixedSize(500, 500)
 
         self.name = name
@@ -96,5 +96,5 @@ class EditItemsWindow(QMainWindow):
             elif self.dict['Controller'] == True and currentInv['Controller'] == False:
                 set_controller_in_use(get_controller_in_use() + 1)
         update_dict(self.id, self.dict)
-        update_sheets()
+        thread_update_sheet(get_items_path())
         self.close()

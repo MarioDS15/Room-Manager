@@ -32,7 +32,9 @@ class FAQWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('FAQ Window')
-
+        initial_size = self.size()
+        self.setMinimumSize(initial_size)
+        self.setMaximumSize(initial_size)
         # Create a scroll area for the content
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)

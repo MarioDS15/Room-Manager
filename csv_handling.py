@@ -28,7 +28,9 @@ def update_sheet(file):
     global sheet
     global sheet_lock
     sheet_lock.acquire()
+    print("Updating: " + file)
     try:
+        print("Lock obtained")
         sheetName = ""
         if file == get_log_path():
             sheetName = "Logs"
@@ -37,6 +39,7 @@ def update_sheet(file):
         elif file == get_room_path():
             sheetName = "Room Settings"
         elif file == get_items_path():
+            print("Updating items sheet")
             sheetName = "Item Settings"
         # Open the Google Sheet
         sheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1GoRyPMKROvDTHMwj3MQRT7pRbovElxDQUoMRK7_0jUM/edit?usp=sharing")    
@@ -184,3 +187,8 @@ def update_weekly_log_sheet():
     worksheet.clear()
     worksheet.update('A1', [headers] + current_week_entries)  # Assuming 'headers' is defined and contains the header row
 
+def thread_update_sheet(file):
+    print("Thread function called")
+    thread = threading.Thread(target=update_sheets)
+    thread.start()
+    return thread

@@ -10,7 +10,10 @@ class RoomStatsWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Room stats Window')
-        #self.setMinimumSize(400, 400)
+
+        initial_size = self.size()
+        self.setMinimumSize(500,400)
+        self.setMaximumSize(500,400)
         # Create and set grid layout
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)

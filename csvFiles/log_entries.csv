@@ -20,5 +20,8 @@ Brandon,G01313500,2024-01-26 13:36:20,"{'Keyboard': True, 'Mouse': True, 'Headse
 Conner,G01308579,2024-01-26 13:53:28,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-26 16:54:10
 Dennis,G01427827,2024-01-26 14:33:22,"{'Keyboard': True, 'Mouse': True, 'Headset': True, 'Controller': False, 'Mousepad': True}",2024-01-26 16:54:10
 tracy,G01114904,2024-01-26 14:34:24,"{'Keyboard': True, 'Mouse': True, 'Headset': True, 'Controller': False, 'Mousepad': True}",2024-01-26 15:17:57
-Ogman,G01107813,2024-01-27 15:03:22,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",
-OG-man278,G31415926,2024-01-27 14:57:38,"{'Keyboard': True, 'Mouse': True, 'Headset': True, 'Controller': False, 'Mousepad': True}",
+Ogman,G01107813,2024-01-27 15:03:22,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-27 16:28:40
+OG-man278,G31415926,2024-01-27 14:57:38,"{'Keyboard': True, 'Mouse': True, 'Headset': True, 'Controller': False, 'Mousepad': True}",2024-01-27 16:28:39
+Skibidi,G01105566,2024-01-27 15:36:00,"{'Keyboard': False, 'Mouse': False, 'Headset': True, 'Controller': True, 'Mousepad': False}",2024-01-27 16:28:37
+Test,G11223344,2024-01-27 17:18:00,"{'Keyboard': True, 'Mouse': True, 'Headset': False, 'Controller': False, 'Mousepad': True}",2024-01-27 17:18:44
+dsads,G12342345,2024-01-27 17:18:17,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-27 17:18:50
