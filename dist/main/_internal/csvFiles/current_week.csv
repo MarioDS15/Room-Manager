@@ -1,6 +1,0 @@
-Name, ID, Date, Equipment,Check-out Time
-Test,G11223344,2024-01-23 13:57:23,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-23 13:58:12
-Test,G44556677,2024-01-23 13:57:56,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",2024-01-23 13:57:57
-Test,G11223344,2024-01-23 21:54:03,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",
-Test,G11223346,2024-01-23 22:04:57,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",
-Test,G55667788,2024-01-23 22:05:01,"{'Keyboard': False, 'Mouse': False, 'Headset': False, 'Controller': False, 'Mousepad': False}",
